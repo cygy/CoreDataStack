@@ -126,7 +126,7 @@ context.performBlock {
 }
 ```
 
-> Behind the scene, a NSManagedObjectContext object that its parent context is the `defaultManagedObjectContext` object is created.
+> Behind the scene, a `NSManagedObjectContext` object that its parent context is the `defaultManagedObjectContext` object is created.
 
 ### Execute a lot of operations on NSManagedObject objects
 
@@ -162,4 +162,4 @@ context.performBlock {
 }
 ```
 
-> Behind the scene, a NSManagedObjectContext object that its parent context is not the `defaultManagedObjectContext` object is created.
+> Behind the scene, a `NSManagedObjectContext` object that its parent context is not the `defaultManagedObjectContext` object is created.
