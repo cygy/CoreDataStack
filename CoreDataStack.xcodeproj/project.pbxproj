@@ -7,57 +7,100 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F15D44E11CB45AAF00A46319 /* CoreDataStack.h in Headers */ = {isa = PBXBuildFile; fileRef = F15D44E01CB45AAF00A46319 /* CoreDataStack.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F1A8E31B1CB1B9AF00C322D9 /* CoreDataStack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1A8E3101CB1B9AF00C322D9 /* CoreDataStack.framework */; };
-		F1A8E3521CB1C85400C322D9 /* CoreDataStackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A8E3511CB1C85400C322D9 /* CoreDataStackTests.swift */; };
-		F1A8E3541CB1C85B00C322D9 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F1A8E3531CB1C85B00C322D9 /* Info.plist */; };
-		F1A8E3561CB1C8B900C322D9 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A8E3551CB1C8B900C322D9 /* CoreDataStack.swift */; };
+		F15EE0FC1CB9ABE500665B4D /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15EE0E71CB9AAEC00665B4D /* CoreDataStack.swift */; };
+		F15EE0FD1CB9ABEF00665B4D /* CoreDataStack.h in Headers */ = {isa = PBXBuildFile; fileRef = F15EE0E61CB9AAEC00665B4D /* CoreDataStack.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F15EE10B1CB9ACBE00665B4D /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15EE0E71CB9AAEC00665B4D /* CoreDataStack.swift */; };
+		F15EE10C1CB9ACC200665B4D /* CoreDataStack.h in Headers */ = {isa = PBXBuildFile; fileRef = F15EE0E61CB9AAEC00665B4D /* CoreDataStack.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F15EE1341CB9ADD400665B4D /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15EE0E71CB9AAEC00665B4D /* CoreDataStack.swift */; };
+		F15EE1351CB9ADD900665B4D /* CoreDataStack.h in Headers */ = {isa = PBXBuildFile; fileRef = F15EE0E61CB9AAEC00665B4D /* CoreDataStack.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F15EE1471CB9AEC200665B4D /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15EE0E71CB9AAEC00665B4D /* CoreDataStack.swift */; };
+		F15EE1481CB9AEC800665B4D /* CoreDataStack.h in Headers */ = {isa = PBXBuildFile; fileRef = F15EE0E61CB9AAEC00665B4D /* CoreDataStack.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		F1A8E31C1CB1B9AF00C322D9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F1A8E3071CB1B9AF00C322D9 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F1A8E30F1CB1B9AF00C322D9;
-			remoteInfo = CoreDataStack;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
-		F15D44E01CB45AAF00A46319 /* CoreDataStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreDataStack.h; path = Sources/CoreDataStack.h; sourceTree = SOURCE_ROOT; };
-		F1A8E3101CB1B9AF00C322D9 /* CoreDataStack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CoreDataStack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F1A8E31A1CB1B9AF00C322D9 /* CoreDataStackTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoreDataStackTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		F1A8E34D1CB1C7DF00C322D9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Sources/Info.plist; sourceTree = SOURCE_ROOT; };
-		F1A8E3511CB1C85400C322D9 /* CoreDataStackTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataStackTests.swift; path = Tests/CoreDataStackTests.swift; sourceTree = SOURCE_ROOT; };
-		F1A8E3531CB1C85B00C322D9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Tests/Info.plist; sourceTree = SOURCE_ROOT; };
-		F1A8E3551CB1C8B900C322D9 /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataStack.swift; path = Sources/CoreDataStack.swift; sourceTree = SOURCE_ROOT; };
+		F15EE0E61CB9AAEC00665B4D /* CoreDataStack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CoreDataStack.h; sourceTree = "<group>"; };
+		F15EE0E71CB9AAEC00665B4D /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		F15EE0E81CB9AAEC00665B4D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F15EE0EA1CB9AAEC00665B4D /* CoreDataStackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStackTests.swift; sourceTree = "<group>"; };
+		F15EE0EB1CB9AAEC00665B4D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F15EE0F41CB9ABC000665B4D /* CoreDataStack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CoreDataStack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F15EE1031CB9AC9F00665B4D /* CoreDataStack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CoreDataStack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F15EE12C1CB9AD8400665B4D /* CoreDataStack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CoreDataStack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F15EE13B1CB9AE6000665B4D /* CoreDataStack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CoreDataStack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		F1A8E30C1CB1B9AF00C322D9 /* Frameworks */ = {
+		F15EE0F01CB9ABC000665B4D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F1A8E3171CB1B9AF00C322D9 /* Frameworks */ = {
+		F15EE0FF1CB9AC9F00665B4D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F1A8E31B1CB1B9AF00C322D9 /* CoreDataStack.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F15EE1281CB9AD8400665B4D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F15EE1371CB9AE6000665B4D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F15EE0E51CB9AAEC00665B4D /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				F15EE0E71CB9AAEC00665B4D /* CoreDataStack.swift */,
+				F15EE0ED1CB9AB3200665B4D /* Supporting Files */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		F15EE0E91CB9AAEC00665B4D /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				F15EE0EA1CB9AAEC00665B4D /* CoreDataStackTests.swift */,
+				F15EE0EE1CB9AB4500665B4D /* Supporting Files */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		F15EE0ED1CB9AB3200665B4D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F15EE0E61CB9AAEC00665B4D /* CoreDataStack.h */,
+				F15EE0E81CB9AAEC00665B4D /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F15EE0EE1CB9AB4500665B4D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F15EE0EB1CB9AAEC00665B4D /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		F1A8E3061CB1B9AF00C322D9 = {
 			isa = PBXGroup;
 			children = (
-				F1A8E3121CB1B9AF00C322D9 /* CoreDataStack */,
-				F1A8E31E1CB1B9AF00C322D9 /* CoreDataStackTests */,
+				F15EE0E51CB9AAEC00665B4D /* Sources */,
+				F15EE0E91CB9AAEC00665B4D /* Tests */,
 				F1A8E3111CB1B9AF00C322D9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -65,80 +108,123 @@
 		F1A8E3111CB1B9AF00C322D9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F1A8E3101CB1B9AF00C322D9 /* CoreDataStack.framework */,
-				F1A8E31A1CB1B9AF00C322D9 /* CoreDataStackTests.xctest */,
+				F15EE0F41CB9ABC000665B4D /* CoreDataStack.framework */,
+				F15EE1031CB9AC9F00665B4D /* CoreDataStack.framework */,
+				F15EE12C1CB9AD8400665B4D /* CoreDataStack.framework */,
+				F15EE13B1CB9AE6000665B4D /* CoreDataStack.framework */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		F1A8E3121CB1B9AF00C322D9 /* CoreDataStack */ = {
-			isa = PBXGroup;
-			children = (
-				F15D44E01CB45AAF00A46319 /* CoreDataStack.h */,
-				F1A8E3551CB1C8B900C322D9 /* CoreDataStack.swift */,
-				F1A8E34D1CB1C7DF00C322D9 /* Info.plist */,
-			);
-			path = CoreDataStack;
-			sourceTree = "<group>";
-		};
-		F1A8E31E1CB1B9AF00C322D9 /* CoreDataStackTests */ = {
-			isa = PBXGroup;
-			children = (
-				F1A8E3511CB1C85400C322D9 /* CoreDataStackTests.swift */,
-				F1A8E3531CB1C85B00C322D9 /* Info.plist */,
-			);
-			path = CoreDataStackTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		F1A8E30D1CB1B9AF00C322D9 /* Headers */ = {
+		F15EE0F11CB9ABC000665B4D /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F15D44E11CB45AAF00A46319 /* CoreDataStack.h in Headers */,
+				F15EE0FD1CB9ABEF00665B4D /* CoreDataStack.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F15EE1001CB9AC9F00665B4D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F15EE10C1CB9ACC200665B4D /* CoreDataStack.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F15EE1291CB9AD8400665B4D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F15EE1351CB9ADD900665B4D /* CoreDataStack.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F15EE1381CB9AE6000665B4D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F15EE1481CB9AEC800665B4D /* CoreDataStack.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		F1A8E30F1CB1B9AF00C322D9 /* CoreDataStack */ = {
+		F15EE0F31CB9ABC000665B4D /* CoreDataStack iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F1A8E3241CB1B9AF00C322D9 /* Build configuration list for PBXNativeTarget "CoreDataStack" */;
+			buildConfigurationList = F15EE0F91CB9ABC000665B4D /* Build configuration list for PBXNativeTarget "CoreDataStack iOS" */;
 			buildPhases = (
-				F1A8E30B1CB1B9AF00C322D9 /* Sources */,
-				F1A8E30C1CB1B9AF00C322D9 /* Frameworks */,
-				F1A8E30D1CB1B9AF00C322D9 /* Headers */,
-				F1A8E30E1CB1B9AF00C322D9 /* Resources */,
+				F15EE0EF1CB9ABC000665B4D /* Sources */,
+				F15EE0F01CB9ABC000665B4D /* Frameworks */,
+				F15EE0F11CB9ABC000665B4D /* Headers */,
+				F15EE0F21CB9ABC000665B4D /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = CoreDataStack;
-			productName = CoreDataStack;
-			productReference = F1A8E3101CB1B9AF00C322D9 /* CoreDataStack.framework */;
+			name = "CoreDataStack iOS";
+			productName = "CoreDataStack iOS";
+			productReference = F15EE0F41CB9ABC000665B4D /* CoreDataStack.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		F1A8E3191CB1B9AF00C322D9 /* CoreDataStackTests */ = {
+		F15EE1021CB9AC9F00665B4D /* CoreDataStack watchOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F1A8E3271CB1B9AF00C322D9 /* Build configuration list for PBXNativeTarget "CoreDataStackTests" */;
+			buildConfigurationList = F15EE1081CB9AC9F00665B4D /* Build configuration list for PBXNativeTarget "CoreDataStack watchOS" */;
 			buildPhases = (
-				F1A8E3161CB1B9AF00C322D9 /* Sources */,
-				F1A8E3171CB1B9AF00C322D9 /* Frameworks */,
-				F1A8E3181CB1B9AF00C322D9 /* Resources */,
+				F15EE0FE1CB9AC9F00665B4D /* Sources */,
+				F15EE0FF1CB9AC9F00665B4D /* Frameworks */,
+				F15EE1001CB9AC9F00665B4D /* Headers */,
+				F15EE1011CB9AC9F00665B4D /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				F1A8E31D1CB1B9AF00C322D9 /* PBXTargetDependency */,
 			);
-			name = CoreDataStackTests;
-			productName = CoreDataStackTests;
-			productReference = F1A8E31A1CB1B9AF00C322D9 /* CoreDataStackTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
+			name = "CoreDataStack watchOS";
+			productName = "CoreDataStack watchOS";
+			productReference = F15EE1031CB9AC9F00665B4D /* CoreDataStack.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		F15EE12B1CB9AD8400665B4D /* CoreDataStack tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F15EE1311CB9AD8400665B4D /* Build configuration list for PBXNativeTarget "CoreDataStack tvOS" */;
+			buildPhases = (
+				F15EE1271CB9AD8400665B4D /* Sources */,
+				F15EE1281CB9AD8400665B4D /* Frameworks */,
+				F15EE1291CB9AD8400665B4D /* Headers */,
+				F15EE12A1CB9AD8400665B4D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "CoreDataStack tvOS";
+			productName = "CoreDataStack tvOS";
+			productReference = F15EE12C1CB9AD8400665B4D /* CoreDataStack.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		F15EE13A1CB9AE6000665B4D /* CoreDataStack OSX */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F15EE1401CB9AE6000665B4D /* Build configuration list for PBXNativeTarget "CoreDataStack OSX" */;
+			buildPhases = (
+				F15EE1361CB9AE6000665B4D /* Sources */,
+				F15EE1371CB9AE6000665B4D /* Frameworks */,
+				F15EE1381CB9AE6000665B4D /* Headers */,
+				F15EE1391CB9AE6000665B4D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "CoreDataStack OSX";
+			productName = "CoreDataStack OSX";
+			productReference = F15EE13B1CB9AE6000665B4D /* CoreDataStack.framework */;
+			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
 
@@ -150,10 +236,16 @@
 				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = "Cyril GY";
 				TargetAttributes = {
-					F1A8E30F1CB1B9AF00C322D9 = {
+					F15EE0F31CB9ABC000665B4D = {
 						CreatedOnToolsVersion = 7.3;
 					};
-					F1A8E3191CB1B9AF00C322D9 = {
+					F15EE1021CB9AC9F00665B4D = {
+						CreatedOnToolsVersion = 7.3;
+					};
+					F15EE12B1CB9AD8400665B4D = {
+						CreatedOnToolsVersion = 7.3;
+					};
+					F15EE13A1CB9AE6000665B4D = {
 						CreatedOnToolsVersion = 7.3;
 					};
 				};
@@ -170,58 +262,235 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F1A8E30F1CB1B9AF00C322D9 /* CoreDataStack */,
-				F1A8E3191CB1B9AF00C322D9 /* CoreDataStackTests */,
+				F15EE0F31CB9ABC000665B4D /* CoreDataStack iOS */,
+				F15EE1021CB9AC9F00665B4D /* CoreDataStack watchOS */,
+				F15EE12B1CB9AD8400665B4D /* CoreDataStack tvOS */,
+				F15EE13A1CB9AE6000665B4D /* CoreDataStack OSX */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		F1A8E30E1CB1B9AF00C322D9 /* Resources */ = {
+		F15EE0F21CB9ABC000665B4D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F1A8E3181CB1B9AF00C322D9 /* Resources */ = {
+		F15EE1011CB9AC9F00665B4D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F1A8E3541CB1C85B00C322D9 /* Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F15EE12A1CB9AD8400665B4D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F15EE1391CB9AE6000665B4D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		F1A8E30B1CB1B9AF00C322D9 /* Sources */ = {
+		F15EE0EF1CB9ABC000665B4D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F1A8E3561CB1C8B900C322D9 /* CoreDataStack.swift in Sources */,
+				F15EE0FC1CB9ABE500665B4D /* CoreDataStack.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F1A8E3161CB1B9AF00C322D9 /* Sources */ = {
+		F15EE0FE1CB9AC9F00665B4D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F1A8E3521CB1C85400C322D9 /* CoreDataStackTests.swift in Sources */,
+				F15EE10B1CB9ACBE00665B4D /* CoreDataStack.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F15EE1271CB9AD8400665B4D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F15EE1341CB9ADD400665B4D /* CoreDataStack.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F15EE1361CB9AE6000665B4D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F15EE1471CB9AEC200665B4D /* CoreDataStack.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		F1A8E31D1CB1B9AF00C322D9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F1A8E30F1CB1B9AF00C322D9 /* CoreDataStack */;
-			targetProxy = F1A8E31C1CB1B9AF00C322D9 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin XCBuildConfiguration section */
+		F15EE0FA1CB9ABC000665B4D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = gy.cyril.CoreDataStack;
+				PRODUCT_NAME = CoreDataStack;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		F15EE0FB1CB9ABC000665B4D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = gy.cyril.CoreDataStack;
+				PRODUCT_NAME = CoreDataStack;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		F15EE1091CB9AC9F00665B4D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "gy.cyril.CoreDataStack-watchOS";
+				PRODUCT_NAME = CoreDataStack;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 2.2;
+			};
+			name = Debug;
+		};
+		F15EE10A1CB9AC9F00665B4D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "gy.cyril.CoreDataStack-watchOS";
+				PRODUCT_NAME = CoreDataStack;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 2.2;
+			};
+			name = Release;
+		};
+		F15EE1321CB9AD8400665B4D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = gy.cyril.CoreDataStack;
+				PRODUCT_NAME = CoreDataStack;
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Debug;
+		};
+		F15EE1331CB9AD8400665B4D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = gy.cyril.CoreDataStack;
+				PRODUCT_NAME = CoreDataStack;
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Release;
+		};
+		F15EE1411CB9AE6000665B4D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = gy.cyril.CoreDataStack;
+				PRODUCT_NAME = CoreDataStack;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		F15EE1421CB9AE6000665B4D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = gy.cyril.CoreDataStack;
+				PRODUCT_NAME = CoreDataStack;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		F1A8E3221CB1B9AF00C322D9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -313,91 +582,46 @@
 			};
 			name = Release;
 		};
-		F1A8E3251CB1B9AF00C322D9 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = gy.cyril.CoreDataStack;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = Debug;
-		};
-		F1A8E3261CB1B9AF00C322D9 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = gy.cyril.CoreDataStack;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
-		F1A8E3281CB1B9AF00C322D9 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = CoreDataStackTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = gy.cyril.CoreDataStackTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		F1A8E3291CB1B9AF00C322D9 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = CoreDataStackTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = gy.cyril.CoreDataStackTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		F15EE0F91CB9ABC000665B4D /* Build configuration list for PBXNativeTarget "CoreDataStack iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F15EE0FA1CB9ABC000665B4D /* Debug */,
+				F15EE0FB1CB9ABC000665B4D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		F15EE1081CB9AC9F00665B4D /* Build configuration list for PBXNativeTarget "CoreDataStack watchOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F15EE1091CB9AC9F00665B4D /* Debug */,
+				F15EE10A1CB9AC9F00665B4D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		F15EE1311CB9AD8400665B4D /* Build configuration list for PBXNativeTarget "CoreDataStack tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F15EE1321CB9AD8400665B4D /* Debug */,
+				F15EE1331CB9AD8400665B4D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		F15EE1401CB9AE6000665B4D /* Build configuration list for PBXNativeTarget "CoreDataStack OSX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F15EE1411CB9AE6000665B4D /* Debug */,
+				F15EE1421CB9AE6000665B4D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		F1A8E30A1CB1B9AF00C322D9 /* Build configuration list for PBXProject "CoreDataStack" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F1A8E3221CB1B9AF00C322D9 /* Debug */,
 				F1A8E3231CB1B9AF00C322D9 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		F1A8E3241CB1B9AF00C322D9 /* Build configuration list for PBXNativeTarget "CoreDataStack" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F1A8E3251CB1B9AF00C322D9 /* Debug */,
-				F1A8E3261CB1B9AF00C322D9 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		F1A8E3271CB1B9AF00C322D9 /* Build configuration list for PBXNativeTarget "CoreDataStackTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F1A8E3281CB1B9AF00C322D9 /* Debug */,
-				F1A8E3291CB1B9AF00C322D9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

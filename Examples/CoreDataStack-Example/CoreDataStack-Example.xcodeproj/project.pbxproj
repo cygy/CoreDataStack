@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		F15D44ED1CB468AF00A46319 /* Person+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15D44EB1CB468AF00A46319 /* Person+CoreDataProperties.swift */; };
 		F15D44EE1CB468AF00A46319 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15D44EC1CB468AF00A46319 /* Person.swift */; };
-		F174B1C61CB5B170001FDDC0 /* CoreDataStack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F15D44E81CB4625F00A46319 /* CoreDataStack.framework */; };
-		F174B1C71CB5B170001FDDC0 /* CoreDataStack.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F15D44E81CB4625F00A46319 /* CoreDataStack.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F15EE1551CB9AF3F00665B4D /* CoreDataStack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F15EE14E1CB9AF1D00665B4D /* CoreDataStack.framework */; };
+		F15EE1561CB9AF3F00665B4D /* CoreDataStack.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F15EE14E1CB9AF1D00665B4D /* CoreDataStack.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F1A8E3371CB1C66200C322D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A8E3361CB1C66200C322D9 /* AppDelegate.swift */; };
 		F1A8E3391CB1C66200C322D9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A8E3381CB1C66200C322D9 /* ViewController.swift */; };
 		F1A8E33C1CB1C66200C322D9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F1A8E33A1CB1C66200C322D9 /* Main.storyboard */; };
@@ -20,37 +20,51 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		F15D44E71CB4625F00A46319 /* PBXContainerItemProxy */ = {
+		F15EE14D1CB9AF1D00665B4D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F15D44E21CB4625F00A46319 /* CoreDataStack.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = F1A8E3101CB1B9AF00C322D9;
-			remoteInfo = CoreDataStack;
+			remoteGlobalIDString = F15EE0F41CB9ABC000665B4D;
+			remoteInfo = "CoreDataStack iOS";
 		};
-		F15D44E91CB4625F00A46319 /* PBXContainerItemProxy */ = {
+		F15EE14F1CB9AF1D00665B4D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F15D44E21CB4625F00A46319 /* CoreDataStack.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = F1A8E31A1CB1B9AF00C322D9;
-			remoteInfo = CoreDataStackTests;
+			remoteGlobalIDString = F15EE1031CB9AC9F00665B4D;
+			remoteInfo = "CoreDataStack watchOS";
 		};
-		F174B1C81CB5B170001FDDC0 /* PBXContainerItemProxy */ = {
+		F15EE1511CB9AF1D00665B4D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F15D44E21CB4625F00A46319 /* CoreDataStack.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F15EE12C1CB9AD8400665B4D;
+			remoteInfo = "CoreDataStack tvOS";
+		};
+		F15EE1531CB9AF1D00665B4D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F15D44E21CB4625F00A46319 /* CoreDataStack.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F15EE13B1CB9AE6000665B4D;
+			remoteInfo = "CoreDataStack OSX";
+		};
+		F15EE1571CB9AF3F00665B4D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F15D44E21CB4625F00A46319 /* CoreDataStack.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = F1A8E30F1CB1B9AF00C322D9;
-			remoteInfo = CoreDataStack;
+			remoteGlobalIDString = F15EE0F31CB9ABC000665B4D;
+			remoteInfo = "CoreDataStack iOS";
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		F174B1CA1CB5B170001FDDC0 /* Embed Frameworks */ = {
+		F15EE1591CB9AF3F00665B4D /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				F174B1C71CB5B170001FDDC0 /* CoreDataStack.framework in Embed Frameworks */,
+				F15EE1561CB9AF3F00665B4D /* CoreDataStack.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -76,7 +90,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F174B1C61CB5B170001FDDC0 /* CoreDataStack.framework in Frameworks */,
+				F15EE1551CB9AF3F00665B4D /* CoreDataStack.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,8 +100,10 @@
 		F15D44E31CB4625F00A46319 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F15D44E81CB4625F00A46319 /* CoreDataStack.framework */,
-				F15D44EA1CB4625F00A46319 /* CoreDataStackTests.xctest */,
+				F15EE14E1CB9AF1D00665B4D /* CoreDataStack.framework */,
+				F15EE1501CB9AF1D00665B4D /* CoreDataStack.framework */,
+				F15EE1521CB9AF1D00665B4D /* CoreDataStack.framework */,
+				F15EE1541CB9AF1D00665B4D /* CoreDataStack.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -135,12 +151,12 @@
 				F1A8E32F1CB1C66200C322D9 /* Sources */,
 				F1A8E3301CB1C66200C322D9 /* Frameworks */,
 				F1A8E3311CB1C66200C322D9 /* Resources */,
-				F174B1CA1CB5B170001FDDC0 /* Embed Frameworks */,
+				F15EE1591CB9AF3F00665B4D /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				F174B1C91CB5B170001FDDC0 /* PBXTargetDependency */,
+				F15EE1581CB9AF3F00665B4D /* PBXTargetDependency */,
 			);
 			name = "CoreDataStack-Example";
 			productName = "CoreDataStack-Example";
@@ -187,18 +203,32 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		F15D44E81CB4625F00A46319 /* CoreDataStack.framework */ = {
+		F15EE14E1CB9AF1D00665B4D /* CoreDataStack.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = CoreDataStack.framework;
-			remoteRef = F15D44E71CB4625F00A46319 /* PBXContainerItemProxy */;
+			remoteRef = F15EE14D1CB9AF1D00665B4D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		F15D44EA1CB4625F00A46319 /* CoreDataStackTests.xctest */ = {
+		F15EE1501CB9AF1D00665B4D /* CoreDataStack.framework */ = {
 			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = CoreDataStackTests.xctest;
-			remoteRef = F15D44E91CB4625F00A46319 /* PBXContainerItemProxy */;
+			fileType = wrapper.framework;
+			path = CoreDataStack.framework;
+			remoteRef = F15EE14F1CB9AF1D00665B4D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F15EE1521CB9AF1D00665B4D /* CoreDataStack.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CoreDataStack.framework;
+			remoteRef = F15EE1511CB9AF1D00665B4D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F15EE1541CB9AF1D00665B4D /* CoreDataStack.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CoreDataStack.framework;
+			remoteRef = F15EE1531CB9AF1D00665B4D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -232,10 +262,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		F174B1C91CB5B170001FDDC0 /* PBXTargetDependency */ = {
+		F15EE1581CB9AF3F00665B4D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = CoreDataStack;
-			targetProxy = F174B1C81CB5B170001FDDC0 /* PBXContainerItemProxy */;
+			name = "CoreDataStack iOS";
+			targetProxy = F15EE1571CB9AF3F00665B4D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
