@@ -1,0 +1,211 @@
+//
+//  ViewController.swift
+//  CoreDataStack-Example
+//
+//  Created by Cyril on 03/04/2016.
+//  Copyright © 2016 Cyril GY. All rights reserved.
+//
+
+import UIKit
+import CoreData
+
+class ViewController: UITableViewController, NSFetchedResultsControllerDelegate {
+    
+    let coreDataStack = (UIApplication.sharedApplication().delegate as! AppDelegate).coreDataStack
+    
+    /*
+     In this example, the NSFetchedResultsController is using the defaultManagedObjectContext object
+     of the main CoreDataStask object which is bound to the main thread.
+     The defaultManagedObjectContext is mainly used to 'pull' and 'read' the objects.
+     */
+    lazy private var fetchedResultsController: NSFetchedResultsController = {
+        let fetchRequest = NSFetchRequest(entityName: "Person")
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastName", ascending: true), NSSortDescriptor(key: "firstName", ascending: true)]
+        
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.coreDataStack.defaultManagedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedResultsController.delegate = self
+        
+        return fetchedResultsController
+    }()
+    
+    /*
+     The persons are generated from scratch to a ManagedObjectContext object bound to a background thread
+     and they are loaded from the defaultManagedObjectContext object which is bound to the main thread.
+     */
+    @IBAction func refreshPersons(sender: UIRefreshControl) {
+        // Here a lot of objects will be created, so we ask for a dedicated managed object context.
+        let context = coreDataStack.getNewManagedObjectContextForLongRunningTask()
+        
+        // The creation of the objects is running into the dedicated queue of the context.
+        context.performBlock {
+            // 10000 objects are inserted.
+            for i in 0...10000 {
+                let person = NSEntityDescription.insertNewObjectForEntityForName("Person", inManagedObjectContext: context) as! Person
+                person.firstName = "John\(i)"
+                person.lastName = "Doe\(i)"
+            }
+            
+            // Then the context is saved.
+            // Here the defaultManagedObjectContext is not aware about the new objects.
+            do {
+                try self.coreDataStack.saveContext(context)
+            } catch let e {
+                print("Can not save the context: \(e)")
+            }
+            
+            // Now the objects are re-fetched and the table view is reloaded to display the changes.
+            NSOperationQueue.mainQueue().addOperationWithBlock() {
+                self.fetch()
+                self.tableView.reloadData()
+                sender.endRefreshing()
+            }
+        }
+    }
+    
+    /*
+     A single persons is generated to a ManagedObjectContext object bound to a background thread
+     which its parent context is the defaultManagedObjectContext object which is bound to the main thread.
+     */
+    @IBAction func addPerson(sender: UIBarButtonItem) {
+        // Here a single object is created, so we ask for a managed object context directly bound to the defaultManagedObjectContext.
+        let context = coreDataStack.getNewManagedObjectContext()
+        
+        // The creation of the objects is running into the dedicated queue of the context.
+        context.performBlock {
+            let person = NSEntityDescription.insertNewObjectForEntityForName("Person", inManagedObjectContext: context) as! Person
+            person.firstName = "John00"
+            person.lastName = "Doe00"
+            
+            // Then the context is saved.
+            // Here the defaultManagedObjectContext is aware about the new object.
+            do {
+                try self.coreDataStack.saveContext(context)
+            } catch let e {
+                print("Can not save the context: \(e)")
+            }
+        }
+    }
+    
+    private func fetch() {
+        do {
+            try self.fetchedResultsController.performFetch()
+        } catch let e {
+            print("Can not load the persons: \(e)")
+        }
+    }
+    
+    private func configureCell(cell: UITableViewCell, indexPath: NSIndexPath) {
+        let person = fetchedResultsController.objectAtIndexPath(indexPath) as! Person
+        cell.textLabel?.text = "\(person.firstName!) \(person.lastName!)"
+    }
+    
+    /*
+     Table view related methods
+     */
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        if let sections = fetchedResultsController.sections {
+            return sections.count
+        }
+        
+        return 0
+    }
+    
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if let sections = fetchedResultsController.sections {
+            return sections[section].numberOfObjects
+        }
+        
+        return 0
+    }
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("personCell", forIndexPath: indexPath)
+        configureCell(cell, indexPath: indexPath)
+        
+        return cell
+    }
+    
+    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return true
+    }
+    
+    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if editingStyle == .Delete {
+            // Save the ID of the object to delete.
+            // Do not forget that the NSManagedObject objects can not be passed through different threads, use the objectID instead.
+            let objectID = self.fetchedResultsController.objectAtIndexPath(indexPath).objectID
+            
+            // Here a single object is deleted, so we ask for a managed object context directly bound to the defaultManagedObjectContext.
+            let context = coreDataStack.getNewManagedObjectContext()
+            
+            // The creation of the objects is running into the dedicated queue of the context.
+            context.performBlock {
+                let objectToDelete = context.objectWithID(objectID)
+                context.deleteObject(objectToDelete)
+                
+                // Then the context is saved.
+                // Here the defaultManagedObjectContext is aware about the changes.
+                do {
+                    try self.coreDataStack.saveContext(context)
+                } catch let e {
+                    print("Can not save the context: \(e)")
+                }
+            }
+        }
+    }
+    
+    /*
+     NSFetchedResultsController related methods
+     */
+    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+        tableView.beginUpdates()
+    }
+    
+    func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+        switch type {
+        case .Insert:
+            tableView.insertSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
+        case .Delete:
+            tableView.deleteSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
+        case .Move:
+            break
+        case .Update:
+            break
+        }
+    }
+    
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+        switch type {
+        case .Insert:
+            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
+        case .Delete:
+            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
+        case .Update:
+            configureCell(self.tableView.cellForRowAtIndexPath(indexPath!)!, indexPath: indexPath!)
+        case .Move:
+            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
+            tableView.insertRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
+        }
+    }
+    
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+        tableView.endUpdates()
+    }
+    
+    /*
+     UIViewController related methods
+     */
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view, typically from a nib.
+        self.fetch()
+    }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+
+
+}
+
