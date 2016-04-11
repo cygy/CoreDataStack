@@ -54,32 +54,22 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
      and they are loaded from the defaultManagedObjectContext object which is bound to the main thread.
      */
     @IBAction func refreshPersons(sender: UIRefreshControl) {
-        // Here a lot of objects will be created, so we ask for a dedicated managed object context.
-        let context = coreDataStack.getNewManagedObjectContextForLongRunningTask()
-        
-        // The creation of the objects is running into the dedicated queue of the context.
-        context.performBlock {
-            // 10000 objects are inserted.
+        coreDataStack.performBlockInContextForLongRunningTask({ (context, saveBlock) in
             for i in 0...10000 {
                 let person = NSEntityDescription.insertNewObjectForEntityForName("Person", inManagedObjectContext: context) as! Person
                 person.firstName = "John\(i)"
                 person.lastName = "Doe\(i)"
+                
+                if i%1000 == 0 {
+                    if let error = saveBlock() {
+                        print("Can not save the context: \(error)")
+                    }
+                }
             }
-            
-            // Then the context is saved.
-            // Here the defaultManagedObjectContext is not aware about the new objects.
-            do {
-                try self.coreDataStack.saveContext(context)
-            } catch let e {
-                print("Can not save the context: \(e)")
-            }
-            
-            // Now the objects are re-fetched and the table view is reloaded to display the changes.
-            NSOperationQueue.mainQueue().addOperationWithBlock() {
+            }) { 
                 self.fetch()
                 self.tableView.reloadData()
                 sender.endRefreshing()
-            }
         }
     }
     
@@ -88,23 +78,11 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
      which its parent context is the defaultManagedObjectContext object which is bound to the main thread.
      */
     @IBAction func addPerson(sender: UIBarButtonItem) {
-        // Here a single object is created, so we ask for a managed object context directly bound to the defaultManagedObjectContext.
-        let context = coreDataStack.getNewManagedObjectContext()
-        
-        // The creation of the objects is running into the dedicated queue of the context.
-        context.performBlock {
+        coreDataStack.performBlockInContext({ context in
             let person = NSEntityDescription.insertNewObjectForEntityForName("Person", inManagedObjectContext: context) as! Person
             person.firstName = "John00"
             person.lastName = "Doe00"
-            
-            // Then the context is saved.
-            // Here the defaultManagedObjectContext is aware about the new object.
-            do {
-                try self.coreDataStack.saveContext(context)
-            } catch let e {
-                print("Can not save the context: \(e)")
-            }
-        }
+        }) {}
     }
     
     private func fetch() {
@@ -153,25 +131,14 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
             // Save the ID of the object to delete.
-            // Do not forget that the NSManagedObject objects can not be passed through different threads, use the objectID instead.
+            // Do not forget that the NSManagedObject objects can not be passed through distinct threads, use the objectID instead.
             let objectID = self.fetchedResultsController.objectAtIndexPath(indexPath).objectID
             
-            // Here a single object is deleted, so we ask for a managed object context directly bound to the defaultManagedObjectContext.
-            let context = coreDataStack.getNewManagedObjectContext()
-            
-            // The creation of the objects is running into the dedicated queue of the context.
-            context.performBlock {
+            // Here a single object is deleted, so a managed object context directly bound to the defaultManagedObjectContext is used.
+            coreDataStack.performBlockInContext({ context in
                 let objectToDelete = context.objectWithID(objectID)
                 context.deleteObject(objectToDelete)
-                
-                // Then the context is saved.
-                // Here the defaultManagedObjectContext is aware about the changes.
-                do {
-                    try self.coreDataStack.saveContext(context)
-                } catch let e {
-                    print("Can not save the context: \(e)")
-                }
-            }
+            }) {}
         }
     }
     

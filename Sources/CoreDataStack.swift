@@ -103,6 +103,28 @@ final public class CoreDataStack {
         try writerManagedObjectContext.save()
     }
     
+    /**
+     Shorthand method to create a NSManagedObjectContext object, perform block, save the context and perform a block in the main thread.
+     
+     - parameter contextBlock: the block to perform with the NSManagedObjectContext object, the save block is passed in argument.
+     - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
+     */
+    public func performBlockInContext(contextBlock: (NSManagedObjectContext -> Void), andInMainThread mainThreadBlock:(() -> Void)?) {
+        let context = getNewManagedObjectContext()
+        performBlock(contextBlock, orContextBlockForLongRunningTask: nil, inContext: context, andInMainThread: mainThreadBlock)
+    }
+    
+    /**
+     Shorthand method to create a NSManagedObjectContext object, perform block, save the context and perform a block in the main thread.
+     
+     - parameter contextBlock: the block to perform with the NSManagedObjectContext object.
+     - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
+     */
+    public func performBlockInContextForLongRunningTask(contextBlock: ((context: NSManagedObjectContext, saveBlock: (() -> ErrorType?)) -> Void), andInMainThread mainThreadBlock:(() -> Void)?) {
+        let context = getNewManagedObjectContextForLongRunningTask()
+        performBlock(nil, orContextBlockForLongRunningTask: contextBlock, inContext: context, andInMainThread: mainThreadBlock)
+    }
+    
     
     // MARK: - Private methods
     
@@ -119,6 +141,44 @@ final public class CoreDataStack {
         context.parentContext = boundToWriterContext ? writerManagedObjectContext : defaultManagedObjectContext
         
         return context
+    }
+    
+    /**
+     Shorthand method to create a NSManagedObjectContext object, perform block, save the context and perform a block in the main thread.
+     
+     - parameter contextBlock: the block to perform with the NSManagedObjectContext object.
+     - parameter contextBlockForLongRunningTask: the block to perform with the NSManagedObjectContext object, the save block is passed in argument.
+     - parameter context: the NSManagedObjectContext object.
+     - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
+     */
+    private func performBlock(contextBlock: (NSManagedObjectContext -> Void)?, orContextBlockForLongRunningTask contextBlockForLongRunningTask: ((context: NSManagedObjectContext, saveBlock: (() -> ErrorType?)) -> Void)?, inContext context:NSManagedObjectContext, andInMainThread mainThreadBlock:(() -> Void)?) {
+        // Define the block which saves the context.
+        let saveBlock : (() -> ErrorType?) = {
+            var error: ErrorType?
+            
+            do {
+                try self.saveContext(context)
+            } catch let e {
+                error = e
+            }
+            
+            return error
+        }
+        
+        // Perform the block with the context.
+        context.performBlock {
+            if let contextBlock = contextBlock {
+                contextBlock(context)
+            } else if let contextBlockForLongRunningTask = contextBlockForLongRunningTask {
+                contextBlockForLongRunningTask(context: context, saveBlock: saveBlock)
+            }
+            
+            saveBlock()
+            
+            if let mainThreadBlock = mainThreadBlock {
+                dispatch_async(dispatch_get_main_queue(), mainThreadBlock)
+            }
+        }
     }
     
     

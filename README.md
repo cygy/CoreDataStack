@@ -126,9 +126,24 @@ context.performBlock {
 }
 ```
 
+This shorthand is equivalent:
+
+```swift
+import CoreDataStack
+
+coreDataStack.performBlockInContext({ context in
+    // Do your operations here.
+    ...
+}) {
+    // This block is run after the first block is done and the context is saved.
+    // This block is run in the main thread and can be sued to update the UI.
+    ...
+}
+```
+
 > Behind the scene, a `NSManagedObjectContext` object that its parent context is the `defaultManagedObjectContext` object is created.
 
-### Execute a lot of operations on NSManagedObject objects
+### Execute a batch of operations on NSManagedObject objects
 
 If you want to do a lot of operations on `NSManagedObject` objects (like import and create, or delete) use a dedicated `NSManagedObjectContext` for this task.
 Once the operations are done, you have to refresh to `defaultManagedObjectContext` to update the UI (i.e. refetch from `NSFetchedResultsController` objects).
@@ -162,4 +177,40 @@ context.performBlock {
 }
 ```
 
+This shorthand is equivalent:
+
+```swift
+import CoreDataStack
+
+coreDataStack.performBlockInContextForLongRunningTask({ (context, saveBlock) in
+    // Do your operations here.
+    ...
+
+    // For long running tasks you can save the context occasionally thanks the `saveBlock`.
+    if let error = saveBlock() {
+        // Handle error here.
+    }
+}) {
+    // This block is run after the first block is done and the context is saved.
+    // This block is run in the main thread and can be sued to update the UI.
+    ...
+}
+```
+
 > Behind the scene, a `NSManagedObjectContext` object that its parent context is not the `defaultManagedObjectContext` object is created.
+
+### Save the contexts
+
+You can save the contexts before the application terminates.
+
+```swift
+import CoreDataStack
+
+func applicationWillTerminate(application: UIApplication) {
+    do {
+        try coreDataStack.saveContexts()
+    } catch let e {
+        debugPrint("Can not save the contexts: \(e)")
+    }
+}
+```
