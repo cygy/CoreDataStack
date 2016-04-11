@@ -134,9 +134,11 @@ import CoreDataStack
 coreDataStack.performBlockInContext({ context in
     // Do your operations here.
     ...
+
+    // The context is saved at the end of this block, no need to call the `saveContext` method.
 }) {
     // This block is run after the first block is done and the context is saved.
-    // This block is run in the main thread and can be sued to update the UI.
+    // This block is run in the main thread and can be used to update the UI.
     ...
 }
 ```
@@ -190,9 +192,11 @@ coreDataStack.performBlockInContextForLongRunningTask({ (context, saveBlock) in
     if let error = saveBlock() {
         // Handle error here.
     }
+
+    // The context is saved at the end of this block, no need to call the `saveContext` method.
 }) {
     // This block is run after the first block is done and the context is saved.
-    // This block is run in the main thread and can be sued to update the UI.
+    // This block is run in the main thread and can be used to update the UI.
     ...
 }
 ```
