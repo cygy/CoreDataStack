@@ -592,6 +592,7 @@
 				F15EE0FB1CB9ABC000665B4D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F15EE1081CB9AC9F00665B4D /* Build configuration list for PBXNativeTarget "CoreDataStack watchOS" */ = {
 			isa = XCConfigurationList;
@@ -600,6 +601,7 @@
 				F15EE10A1CB9AC9F00665B4D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F15EE1311CB9AD8400665B4D /* Build configuration list for PBXNativeTarget "CoreDataStack tvOS" */ = {
 			isa = XCConfigurationList;
@@ -608,6 +610,7 @@
 				F15EE1331CB9AD8400665B4D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F15EE1401CB9AE6000665B4D /* Build configuration list for PBXNativeTarget "CoreDataStack OSX" */ = {
 			isa = XCConfigurationList;
@@ -616,6 +619,7 @@
 				F15EE1421CB9AE6000665B4D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F1A8E30A1CB1B9AF00C322D9 /* Build configuration list for PBXProject "CoreDataStack" */ = {
 			isa = XCConfigurationList;
