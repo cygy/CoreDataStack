@@ -1,10 +1,27 @@
 # CoreDataStack
 
-Helper to set up CoreData stack on iOS/tvOS/watchOS/OSX projects.
+Helper to set up CoreData stack, fetch, create and save `NSManagedObject` objects for your iOS/tvOS/watchOS/OSX projects.
 You continue using `NSManagedObject`, `NSFetchedResultsController` classes... Not magic, just a helper :)
 
-This helper is based on two `NSManagedObjectContext` objects. A writer and a default.
-The default `NSManagedObjectContext` is exclusively used to fetch to objects from the UI. Its parent context is the writer `NSManagedObjectContext`.
+`CoreDataStack` instances provide a default `NSManagedObjectContext` object to use with the `NSFetchedResultsController` objects.
+`CoreDataStack` instances provide also convenient methods to execute the recurring pattern: create a `NSManagedObjectContext` object, create  some `NSManagedObject` objects, save them and update the user interface in the main thread.
+
+Example:
+
+```swift
+import CoreDataStack
+
+// The first block is used to perform actions on the context's thread.
+// This block provides a context and save it.
+// The second block is used to update the user interface, it runs on the main thread.
+coreDataStack.performBlockInContext({ context in
+    let person = NSEntityDescription.insertNewObjectForEntityForName("Person", inManagedObjectContext: context) as! Person
+    person.firstName = "John"
+    person.lastName = "Doe"
+}) {
+    self.tableView.reloadData()
+}
+```
 
 ## Platforms
 
