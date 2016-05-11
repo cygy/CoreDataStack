@@ -88,7 +88,13 @@ final public class CoreDataStack {
         try context.save()
         
         if context.parentContext == defaultManagedObjectContext {
-            try context.parentContext?.save()
+            defaultManagedObjectContext.performBlock {
+                do {
+                    try self.defaultManagedObjectContext.save()
+                } catch let e {
+                    fatalError("Can not save the context: \(e)")
+                }
+            }
         }
     }
     
@@ -99,8 +105,18 @@ final public class CoreDataStack {
      - throws: save operations can throw errors.
      */
     public func saveContexts() throws {
-        try defaultManagedObjectContext.save()
-        try writerManagedObjectContext.save()
+        let saveContext = { (context: NSManagedObjectContext) in
+            context.performBlock {
+                do {
+                    try context.save()
+                } catch let e {
+                    fatalError("Can not save the context: \(e)")
+                }
+            }
+        }
+        
+        saveContext(defaultManagedObjectContext)
+        saveContext(writerManagedObjectContext)
     }
     
     /**
