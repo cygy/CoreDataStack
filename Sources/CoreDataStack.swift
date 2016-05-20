@@ -34,13 +34,14 @@ final public class CoreDataStack {
     // MARK: - Properties
     
     /**
-    Casual CoreData objects.
-    */
+     Casual CoreData objects.
+     See Apple documentation to more details: https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/CoreData/index.html#//apple_ref/doc/uid/TP40001075
+     */
     private let managedObjectModel: NSManagedObjectModel
     private let persistentStoreCoodinator: NSPersistentStoreCoordinator
     
     /**
-     This NSManagedObjectContext is responsible to write to the store.
+     This NSManagedObjectContext is responsible to write to the persistent store.
      */
     private let writerManagedObjectContext: NSManagedObjectContext
     
@@ -57,11 +58,11 @@ final public class CoreDataStack {
     // MARK: - Methods
     
     /**
-    Create a new NSManagedObjectContext object bound to the defaultManagedObjectContext object.
-    Call this method to get a NSManagedObjectContext object in order to execute a small amount of CoreData operations.
-    
-    - returns: the new NSManagedObjectContext used to update/create some NSManagedObject objects.
-    */
+     Create a new NSManagedObjectContext object bound to the defaultManagedObjectContext object.
+     Call this method to get a NSManagedObjectContext object in order to execute a small amount of CoreData operations.
+     
+     - returns: the new NSManagedObjectContext used to update/create some NSManagedObject objects.
+     */
     public func getNewManagedObjectContext() -> NSManagedObjectContext {
         return getNewManagedObjectContextBoundToWriterContext(false)
     }
@@ -120,36 +121,58 @@ final public class CoreDataStack {
     }
     
     /**
-     Shorthand method to create a NSManagedObjectContext object, perform block, save the context and perform a block in the main thread.
+     Shorthand method to create a NSManagedObjectContext object, to perform block, to save the context and to perform a block in the main thread.
      
      - parameter contextBlock: the block to perform with the NSManagedObjectContext object, the save block is passed in argument.
      - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
      */
-    public func performBlockInContext(contextBlock: (NSManagedObjectContext -> Void), andInMainThread mainThreadBlock:(() -> Void)?) {
+    public func performBlockInContext(contextBlock: (NSManagedObjectContext -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
         let context = getNewManagedObjectContext()
-        performBlock(contextBlock, orContextBlockForLongRunningTask: nil, inContext: context, andInMainThread: mainThreadBlock)
+        performBlock(contextBlock, orContextBlockForLongRunningTask: nil, inContext: context, wait: false, andInMainThread: mainThreadBlock)
     }
     
     /**
-     Shorthand method to create a NSManagedObjectContext object, perform block, save the context and perform a block in the main thread.
+     Shorthand method to create a NSManagedObjectContext object, to perform block and to wait it ends, to save the context and to perform a block in the main thread.
+     
+     - parameter contextBlock: the block to perform with the NSManagedObjectContext object, the save block is passed in argument.
+     - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
+     */
+    public func performBlockAndWaitInContext(contextBlock: (NSManagedObjectContext -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
+        let context = getNewManagedObjectContext()
+        performBlock(contextBlock, orContextBlockForLongRunningTask: nil, inContext: context, wait: true, andInMainThread: mainThreadBlock)
+    }
+    
+    /**
+     Shorthand method to create a NSManagedObjectContext object, to perform block, to save the context and to perform a block in the main thread.
      
      - parameter contextBlock: the block to perform with the NSManagedObjectContext object.
      - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
      */
-    public func performBlockInContextForLongRunningTask(contextBlock: ((context: NSManagedObjectContext, saveBlock: (() -> ErrorType?)) -> Void), andInMainThread mainThreadBlock:(() -> Void)?) {
+    public func performBlockInContextForLongRunningTask(contextBlock: ((context: NSManagedObjectContext, saveBlock: ((Bool) -> ErrorType?)) -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
         let context = getNewManagedObjectContextForLongRunningTask()
-        performBlock(nil, orContextBlockForLongRunningTask: contextBlock, inContext: context, andInMainThread: mainThreadBlock)
+        performBlock(nil, orContextBlockForLongRunningTask: contextBlock, inContext: context, wait: false, andInMainThread: mainThreadBlock)
+    }
+    
+    /**
+     Shorthand method to create a NSManagedObjectContext object, to perform block and to wait it ends, to save the context and to perform a block in the main thread.
+     
+     - parameter contextBlock: the block to perform with the NSManagedObjectContext object.
+     - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
+     */
+    public func performBlockAndWaitInContextForLongRunningTask(contextBlock: ((context: NSManagedObjectContext, saveBlock: ((Bool) -> ErrorType?)) -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
+        let context = getNewManagedObjectContextForLongRunningTask()
+        performBlock(nil, orContextBlockForLongRunningTask: contextBlock, inContext: context, wait: true, andInMainThread: mainThreadBlock)
     }
     
     
     // MARK: - Private methods
     
     /**
-    Create a new NSManagedObjectContext object bound or not to the writerManagedObjectContext object.
-    
-    - parameter boundToWriterContext: bool to know if this NSManagedObjectContext object must be bound to the writerManagedObjectContext object.
-    - returns: the new NSManagedObjectContext used to update/create some NSManagedObject objects.
-    */
+     Create a new NSManagedObjectContext object bound or not to the writerManagedObjectContext object.
+     
+     - parameter boundToWriterContext: bool to know if this NSManagedObjectContext object must be bound to the writerManagedObjectContext object.
+     - returns: the new NSManagedObjectContext used to update/create some NSManagedObject objects.
+     */
     private func getNewManagedObjectContextBoundToWriterContext(boundToWriterContext: Bool) -> NSManagedObjectContext {
         let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
         context.undoManager = nil
@@ -165,35 +188,62 @@ final public class CoreDataStack {
      - parameter contextBlock: the block to perform with the NSManagedObjectContext object.
      - parameter contextBlockForLongRunningTask: the block to perform with the NSManagedObjectContext object, the save block is passed in argument.
      - parameter context: the NSManagedObjectContext object.
+     - parameter wait: flag to set the contextBlock blocking or not the thread.
      - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
      */
-    private func performBlock(contextBlock: (NSManagedObjectContext -> Void)?, orContextBlockForLongRunningTask contextBlockForLongRunningTask: ((context: NSManagedObjectContext, saveBlock: (() -> ErrorType?)) -> Void)?, inContext context:NSManagedObjectContext, andInMainThread mainThreadBlock:(() -> Void)?) {
+    private func performBlock(contextBlock: (NSManagedObjectContext -> Void)?, orContextBlockForLongRunningTask contextBlockForLongRunningTask: ((context: NSManagedObjectContext, saveBlock: ((Bool) -> ErrorType?)) -> Void)?, inContext context:NSManagedObjectContext, wait: Bool, andInMainThread mainThreadBlock:(() -> Void)?) {
         // Define the block which saves the context.
-        let saveBlock : (() -> ErrorType?) = {
+        let saveBlock : ((Bool) -> ErrorType?) = { mergeChangesInDefaultManagedObjectContext in
             var error: ErrorType?
             
             do {
+                if mergeChangesInDefaultManagedObjectContext {
+                    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.mergeChanges), name: NSManagedObjectContextDidSaveNotification, object: context)
+                }
                 try self.saveContext(context)
             } catch let e {
                 error = e
+            }
+            
+            if mergeChangesInDefaultManagedObjectContext {
+                NSNotificationCenter.defaultCenter().removeObserver(self, name: NSManagedObjectContextDidSaveNotification, object: context)
             }
             
             return error
         }
         
         // Perform the block with the context.
-        context.performBlock {
+        let blockToPerform = {
             if let contextBlock = contextBlock {
                 contextBlock(context)
             } else if let contextBlockForLongRunningTask = contextBlockForLongRunningTask {
                 contextBlockForLongRunningTask(context: context, saveBlock: saveBlock)
             }
             
-            saveBlock()
+            saveBlock(false)
             
             if let mainThreadBlock = mainThreadBlock {
                 dispatch_async(dispatch_get_main_queue(), mainThreadBlock)
             }
+        }
+        
+        if wait {
+            context.performBlockAndWait(blockToPerform)
+        } else {
+            context.performBlock(blockToPerform)
+        }
+    }
+    
+    /**
+     Merges the changes from a NSManagedObjectContext object to the defaultManagedObjectContext object.
+     
+     - parameter notification: notification containing hte changes sent by the NSManagedObjectContext object.
+     */
+    @objc private func mergeChanges(notification: NSNotification) {
+        if let sender = notification.object as? NSManagedObjectContext where sender != defaultManagedObjectContext && sender != writerManagedObjectContext && sender.parentContext == writerManagedObjectContext {
+            defaultManagedObjectContext.performBlock({
+                self.defaultManagedObjectContext.mergeChangesFromContextDidSaveNotification(notification)
+            })
         }
     }
     
@@ -201,15 +251,15 @@ final public class CoreDataStack {
     // MARK: - Lifecycle
     
     /**
-    Create a new CoreDataManager object.
-    
-    - parameter modelFileNames: Name of the .momd files (usually at the root of the bundle).
-    - parameter persistentFileName: name of the persistent file of the CoreData.
-    - parameter persistentStoreType: type of the persistent store (default = NSSQLiteStoreType)
-    - parameter persistentStoreConfigration: configuration of the persistent store (default = nil)
-    - parameter persistentStoreOptions: options of the persistent store (default = [NSMigratePersistentStoresAutomaticallyOption: true, NSInferMappingModelAutomaticallyOption: true])
-    - returns: the new NSManagedObjectContext used to update/create some NSManagedObject objects.
-    */
+     Create a new CoreDataStack object.
+     
+     - parameter modelFileNames: Name of the .momd files (usually at the root of the bundle).
+     - parameter persistentFileName: name of the persistent file of the CoreData.
+     - parameter persistentStoreType: type of the persistent store (default = NSSQLiteStoreType)
+     - parameter persistentStoreConfigration: configuration of the persistent store (default = nil)
+     - parameter persistentStoreOptions: options of the persistent store (default = [NSMigratePersistentStoresAutomaticallyOption: true, NSInferMappingModelAutomaticallyOption: true])
+     - returns: the new NSManagedObjectContext used to update/create some NSManagedObject objects.
+     */
     public init(modelFileNames: [String], persistentFileName: String, persistentStoreType: String = NSSQLiteStoreType, persistentStoreConfigration: String? = nil, persistentStoreOptions: [String:AnyObject]? = [NSMigratePersistentStoresAutomaticallyOption: true, NSInferMappingModelAutomaticallyOption: true]) {
         // Create the managed object model.
         var models = [NSManagedObjectModel]()

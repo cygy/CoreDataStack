@@ -61,7 +61,7 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
                 person.lastName = "Doe\(i)"
                 
                 if i%1000 == 0 {
-                    if let error = saveBlock() {
+                    if let error = saveBlock(false) {
                         print("Can not save the context: \(error)")
                     }
                 }
