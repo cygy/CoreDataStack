@@ -38,7 +38,8 @@ final public class CoreDataStack {
      See Apple documentation to more details: https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/CoreData/index.html#//apple_ref/doc/uid/TP40001075
      */
     private let managedObjectModel: NSManagedObjectModel
-    private let persistentStoreCoodinator: NSPersistentStoreCoordinator
+    private let defaultPersistentStoreCoodinator: NSPersistentStoreCoordinator
+    private let batchPersistentStoreCoodinator: NSPersistentStoreCoordinator
     
     /**
      This NSManagedObjectContext is responsible to write to the persistent store.
@@ -50,7 +51,8 @@ final public class CoreDataStack {
      Use it with the NSFetchedResultsController objects.
      It will not write directly to the store, this is delegated to the writerManagedObjectContext object.
      Do not use this context directly to update/delete/create NSManagedObject objects,
-     call the getNewManagedObjectContextForLongRunningTask() or getNewManagedObjectContext() methods instead.
+     call the getNewManagedObjectContextForLongRunningTask(), getNewManagedObjectContextForBatchTask()
+     or getNewManagedObjectContext() methods instead.
      */
     public let defaultManagedObjectContext: NSManagedObjectContext
     
@@ -79,6 +81,22 @@ final public class CoreDataStack {
     }
     
     /**
+     Create a new NSManagedObjectContext object bound to the batchPersistentStoreCoodinator object.
+     Call this method to get a NSManagedObjectContext object in order to execute a large amount of CoreData operations
+     like import, deleting, etc. You must refetch from the defaultManagedObjectContext object to see the changes.
+     
+     - returns: the new NSManagedObjectContext used to update/create some NSManagedObject objects.
+     */
+    public func getNewManagedObjectContextForBatchTask() -> NSManagedObjectContext {
+        let context = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.PrivateQueueConcurrencyType)
+        context.persistentStoreCoordinator = batchPersistentStoreCoodinator
+        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        context.undoManager = nil
+        
+        return context
+    }
+    
+    /**
      Save a context and save its parent context if needed.
      Please call this method in order to save the NSManagedObjectContext objects created by this manager.
      
@@ -92,7 +110,8 @@ final public class CoreDataStack {
             defaultManagedObjectContext.performBlock {
                 do {
                     try self.defaultManagedObjectContext.save()
-                } catch let e {
+                }
+                catch let e {
                     fatalError("Can not save the context: \(e)")
                 }
             }
@@ -110,7 +129,8 @@ final public class CoreDataStack {
             context.performBlock {
                 do {
                     try context.save()
-                } catch let e {
+                }
+                catch let e {
                     fatalError("Can not save the context: \(e)")
                 }
             }
@@ -164,6 +184,41 @@ final public class CoreDataStack {
         performBlock(nil, orContextBlockForLongRunningTask: contextBlock, inContext: context, wait: true, andInMainThread: mainThreadBlock)
     }
     
+    /**
+     Shorthand method to create a NSManagedObjectContext object, to perform block, to save the context and to perform a block in the main thread.
+     
+     - parameter contextBlock: the block to perform with the NSManagedObjectContext object.
+     - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
+     */
+    public func performBlockInContextForBatchTask(contextBlock: ((context: NSManagedObjectContext, saveBlock: (() -> ErrorType?)) -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
+        // Get a new context.
+        let context = getNewManagedObjectContextForBatchTask()
+        
+        // Define the block which saves the context.
+        let saveBlock : (() -> ErrorType?) = {
+            var error: ErrorType?
+            
+            do {
+                try self.saveContext(context)
+            }
+            catch let e {
+                error = e
+            }
+            
+            return error
+        }
+        
+        // Perform the block with the context.
+        context.performBlock {
+            contextBlock(context: context, saveBlock: saveBlock)
+            saveBlock()
+            
+            if let mainThreadBlock = mainThreadBlock {
+                dispatch_async(dispatch_get_main_queue(), mainThreadBlock)
+            }
+        }
+    }
+    
     
     // MARK: - Private methods
     
@@ -175,6 +230,7 @@ final public class CoreDataStack {
      */
     private func getNewManagedObjectContextBoundToWriterContext(boundToWriterContext: Bool) -> NSManagedObjectContext {
         let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         context.undoManager = nil
         
         context.parentContext = boundToWriterContext ? writerManagedObjectContext : defaultManagedObjectContext
@@ -201,7 +257,8 @@ final public class CoreDataStack {
                     NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.mergeChanges), name: NSManagedObjectContextDidSaveNotification, object: context)
                 }
                 try self.saveContext(context)
-            } catch let e {
+            }
+            catch let e {
                 error = e
             }
             
@@ -216,7 +273,8 @@ final public class CoreDataStack {
         let blockToPerform = {
             if let contextBlock = contextBlock {
                 contextBlock(context)
-            } else if let contextBlockForLongRunningTask = contextBlockForLongRunningTask {
+            }
+            else if let contextBlockForLongRunningTask = contextBlockForLongRunningTask {
                 contextBlockForLongRunningTask(context: context, saveBlock: saveBlock)
             }
             
@@ -229,7 +287,8 @@ final public class CoreDataStack {
         
         if wait {
             context.performBlockAndWait(blockToPerform)
-        } else {
+        }
+        else {
             context.performBlock(blockToPerform)
         }
     }
@@ -290,24 +349,28 @@ final public class CoreDataStack {
         if !fileManager.fileExistsAtPath(directoryPath) {
             do {
                 try fileManager.createDirectoryAtPath(directoryPath, withIntermediateDirectories: true, attributes: nil)
-            } catch let error {
+            }
+            catch let error {
                 fatalError("Can not create the persistent store coordinator directory: \(error).")
             }
         }
         
-        persistentStoreCoodinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
+        defaultPersistentStoreCoodinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
+        batchPersistentStoreCoodinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
         
         do {
             let storeURL = NSURL(fileURLWithPath: directoryPath).URLByAppendingPathComponent(persistentFileName)
-            try persistentStoreCoodinator.addPersistentStoreWithType(persistentStoreType, configuration: persistentStoreConfigration, URL: storeURL, options: persistentStoreOptions)
-        } catch let error {
+            try defaultPersistentStoreCoodinator.addPersistentStoreWithType(persistentStoreType, configuration: persistentStoreConfigration, URL: storeURL, options: persistentStoreOptions)
+            try batchPersistentStoreCoodinator.addPersistentStoreWithType(persistentStoreType, configuration: persistentStoreConfigration, URL: storeURL, options: persistentStoreOptions)
+        }
+        catch let error {
             fatalError("Can not create the persistent store coordinator file: \(error).")
         }
         
         // Create the writer managed object context.
         writerManagedObjectContext = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.PrivateQueueConcurrencyType)
         writerManagedObjectContext.undoManager = nil
-        writerManagedObjectContext.persistentStoreCoordinator = persistentStoreCoodinator
+        writerManagedObjectContext.persistentStoreCoordinator = defaultPersistentStoreCoodinator
         
         // Create the default managed object contexte.
         defaultManagedObjectContext = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.MainQueueConcurrencyType)
