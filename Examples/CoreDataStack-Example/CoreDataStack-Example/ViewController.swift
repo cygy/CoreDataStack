@@ -54,14 +54,14 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
      and they are loaded from the defaultManagedObjectContext object which is bound to the main thread.
      */
     @IBAction func refreshPersons(sender: UIRefreshControl) {
-        coreDataStack.performBlockInContextForLongRunningTask({ (context, saveBlock) in
+        coreDataStack.performBlockInContextForBatchTask({ (context, saveBlock) in
             for i in 0...10000 {
                 let person = NSEntityDescription.insertNewObjectForEntityForName("Person", inManagedObjectContext: context) as! Person
                 person.firstName = "John\(i)"
                 person.lastName = "Doe\(i)"
                 
                 if i%1000 == 0 {
-                    if let error = saveBlock(false) {
+                    if let error = saveBlock() {
                         print("Can not save the context: \(error)")
                     }
                 }
@@ -88,7 +88,8 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
     private func fetch() {
         do {
             try self.fetchedResultsController.performFetch()
-        } catch let e {
+        }
+        catch let e {
             print("Can not load the persons: \(e)")
         }
     }
