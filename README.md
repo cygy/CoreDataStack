@@ -137,7 +137,8 @@ context.performBlock {
     // Save the context.
     do {
         try coreDataStack.saveContext(context)
-    } catch let e {
+    }
+    catch let e {
         // Handle error here.
     }
 }
@@ -162,17 +163,15 @@ coreDataStack.performBlockInContext({ context in
 
 > Behind the scene, a `NSManagedObjectContext` object that its parent context is the `defaultManagedObjectContext` object is created.
 
-### Execute a batch of operations on NSManagedObject objects
+### Execute operations on NSManagedObject objects on background
 
-If you want to do a lot of operations on `NSManagedObject` objects (like import and create, or delete) use a dedicated `NSManagedObjectContext` for this task.
+If you want to do operations on `NSManagedObject` objects on a background thread, use a dedicated `NSManagedObjectContext` for this task.
 Once the operations are done, you have to refresh to `defaultManagedObjectContext` to update the UI (i.e. refetch from `NSFetchedResultsController` objects).
-
-This is also useful to import a large amount of data that are not related to the UI.
 
 ```swift
 import CoreDataStack
 
-let context = coreDataStack.getNewManagedObjectContextForLongRunningTask()
+let context = coreDataStack.getNewManagedObjectContextForBackgroundTask()
 
 context.performBlock {
     // Do your operations here.
@@ -181,7 +180,8 @@ context.performBlock {
     // Save the context.
     do {
         try coreDataStack.saveContext(context)
-    } catch let e {
+    }
+    catch let e {
         // Handle error here.
     }
 
@@ -189,7 +189,8 @@ context.performBlock {
     NSOperationQueue.mainQueue().addOperationWithBlock() {
         do {
             try fetchedResultsController.performFetch()
-        } catch let e {
+        }
+        catch let e {
             // Handle error here.
         }
     }
@@ -201,7 +202,67 @@ This shorthand is equivalent:
 ```swift
 import CoreDataStack
 
-coreDataStack.performBlockInContextForLongRunningTask({ (context, saveBlock) in
+coreDataStack.performBlockInContextForBackgroundTask({ (context, saveBlock) in
+    // Do your operations here.
+    ...
+
+    // For long running tasks you can save the context occasionally thanks the `saveBlock`.
+    if let error = saveBlock(false) {
+        // Handle error here.
+    }
+
+    // The context is saved at the end of this block, no need to call the `saveContext` method.
+}) {
+    // This block is run after the first block is done and the context is saved.
+    // This block is run in the main thread and can be used to update the UI.
+    ...
+}
+```
+
+> Behind the scene, a `NSManagedObjectContext` object that its parent context is the `writerManagedObjectContext` object and not the `defaultManagedObjectContext` object is created.
+
+### Execute a batch of operations on NSManagedObject objects
+
+If you want to do a batch of operations on `NSManagedObject` objects (like large import and create, or delete), use a dedicated `NSManagedObjectContext` for this task.
+Once the operations are done, you have to refresh to `defaultManagedObjectContext` to update the UI (i.e. refetch from `NSFetchedResultsController` objects).
+
+This is also useful to import a large amount of data that are not related to the UI.
+
+```swift
+import CoreDataStack
+
+let context = coreDataStack.getNewManagedObjectContextForBatchTask()
+
+context.performBlock {
+    // Do your operations here.
+    ...
+
+    // Save the context.
+    do {
+        try coreDataStack.saveContext(context)
+    }
+    catch let e {
+        // Handle error here.
+    }
+
+    // Now update the 'defaultManagedObjectContext' object.
+    NSOperationQueue.mainQueue().addOperationWithBlock() {
+        do {
+            try fetchedResultsController.performFetch()
+        }
+        catch let e {
+            // Handle error here.
+        }
+    }
+}
+```
+
+This shorthand is equivalent:
+
+```swift
+import CoreDataStack
+
+coreDataStack.performBlockInContextForBatchTask({ (context, saveBlock) in
     // Do your operations here.
     ...
 
@@ -218,7 +279,7 @@ coreDataStack.performBlockInContextForLongRunningTask({ (context, saveBlock) in
 }
 ```
 
-> Behind the scene, a `NSManagedObjectContext` object that its parent context is not the `defaultManagedObjectContext` object is created.
+> Behind the scene, a `NSManagedObjectContext` object that its parent persistent store is different than the `defaultManagedObjectContext` object is created.
 
 ### Save the contexts
 

@@ -71,12 +71,11 @@ final public class CoreDataStack {
     
     /**
      Create a new NSManagedObjectContext object bound to the writerManagedObjectContext object directly.
-     Call this method to get a NSManagedObjectContext object in order to execute a large amount of CoreData operations
-     or execute some operations in background.
+     Call this method to get a NSManagedObjectContext object in order to execute some operations in background.
      
      - returns: the new NSManagedObjectContext used to update/create some NSManagedObject objects.
      */
-    public func getNewManagedObjectContextForLongRunningTask() -> NSManagedObjectContext {
+    public func getNewManagedObjectContextForBackgroundTask() -> NSManagedObjectContext {
         return getNewManagedObjectContextBoundToWriterContext(true)
     }
     
@@ -168,8 +167,8 @@ final public class CoreDataStack {
      - parameter contextBlock: the block to perform with the NSManagedObjectContext object.
      - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
      */
-    public func performBlockInContextForLongRunningTask(contextBlock: ((context: NSManagedObjectContext, saveBlock: ((Bool) -> ErrorType?)) -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
-        let context = getNewManagedObjectContextForLongRunningTask()
+    public func performBlockInContextForBackgroundTask(contextBlock: ((context: NSManagedObjectContext, saveBlock: ((Bool) -> ErrorType?)) -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
+        let context = getNewManagedObjectContextForBackgroundTask()
         performBlock(nil, orContextBlockForLongRunningTask: contextBlock, inContext: context, wait: false, andInMainThread: mainThreadBlock)
     }
     
@@ -179,8 +178,8 @@ final public class CoreDataStack {
      - parameter contextBlock: the block to perform with the NSManagedObjectContext object.
      - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
      */
-    public func performBlockAndWaitInContextForLongRunningTask(contextBlock: ((context: NSManagedObjectContext, saveBlock: ((Bool) -> ErrorType?)) -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
-        let context = getNewManagedObjectContextForLongRunningTask()
+    public func performBlockAndWaitInContextForBackgroundTask(contextBlock: ((context: NSManagedObjectContext, saveBlock: ((Bool) -> ErrorType?)) -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
+        let context = getNewManagedObjectContextForBackgroundTask()
         performBlock(nil, orContextBlockForLongRunningTask: contextBlock, inContext: context, wait: true, andInMainThread: mainThreadBlock)
     }
     
