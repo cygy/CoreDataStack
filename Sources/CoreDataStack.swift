@@ -106,7 +106,7 @@ final public class CoreDataStack {
         try context.save()
         
         if context.parentContext == defaultManagedObjectContext {
-            defaultManagedObjectContext.performBlock {
+            defaultManagedObjectContext.performBlock { [unowned self] in
                 do {
                     try self.defaultManagedObjectContext.save()
                 }
@@ -147,7 +147,7 @@ final public class CoreDataStack {
      */
     public func performBlockInContext(contextBlock: (NSManagedObjectContext -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
         let context = getNewManagedObjectContext()
-        performBlock(contextBlock, orContextBlockForLongRunningTask: nil, inContext: context, wait: false, andInMainThread: mainThreadBlock)
+        performBlock(contextBlock, orContextBlockForBackgroundTask: nil, inContext: context, wait: false, andInMainThread: mainThreadBlock)
     }
     
     /**
@@ -158,7 +158,7 @@ final public class CoreDataStack {
      */
     public func performBlockAndWaitInContext(contextBlock: (NSManagedObjectContext -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
         let context = getNewManagedObjectContext()
-        performBlock(contextBlock, orContextBlockForLongRunningTask: nil, inContext: context, wait: true, andInMainThread: mainThreadBlock)
+        performBlock(contextBlock, orContextBlockForBackgroundTask: nil, inContext: context, wait: true, andInMainThread: mainThreadBlock)
     }
     
     /**
@@ -169,7 +169,7 @@ final public class CoreDataStack {
      */
     public func performBlockInContextForBackgroundTask(contextBlock: ((context: NSManagedObjectContext, saveBlock: ((Bool) -> ErrorType?)) -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
         let context = getNewManagedObjectContextForBackgroundTask()
-        performBlock(nil, orContextBlockForLongRunningTask: contextBlock, inContext: context, wait: false, andInMainThread: mainThreadBlock)
+        performBlock(nil, orContextBlockForBackgroundTask: contextBlock, inContext: context, wait: false, andInMainThread: mainThreadBlock)
     }
     
     /**
@@ -180,7 +180,7 @@ final public class CoreDataStack {
      */
     public func performBlockAndWaitInContextForBackgroundTask(contextBlock: ((context: NSManagedObjectContext, saveBlock: ((Bool) -> ErrorType?)) -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
         let context = getNewManagedObjectContextForBackgroundTask()
-        performBlock(nil, orContextBlockForLongRunningTask: contextBlock, inContext: context, wait: true, andInMainThread: mainThreadBlock)
+        performBlock(nil, orContextBlockForBackgroundTask: contextBlock, inContext: context, wait: true, andInMainThread: mainThreadBlock)
     }
     
     /**
@@ -190,32 +190,17 @@ final public class CoreDataStack {
      - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
      */
     public func performBlockInContextForBatchTask(contextBlock: ((context: NSManagedObjectContext, saveBlock: (() -> ErrorType?)) -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
-        // Get a new context.
-        let context = getNewManagedObjectContextForBatchTask()
-        
-        // Define the block which saves the context.
-        let saveBlock : (() -> ErrorType?) = {
-            var error: ErrorType?
-            
-            do {
-                try self.saveContext(context)
-            }
-            catch let e {
-                error = e
-            }
-            
-            return error
-        }
-        
-        // Perform the block with the context.
-        context.performBlock {
-            contextBlock(context: context, saveBlock: saveBlock)
-            saveBlock()
-            
-            if let mainThreadBlock = mainThreadBlock {
-                dispatch_async(dispatch_get_main_queue(), mainThreadBlock)
-            }
-        }
+        performBlockForBatchTask(contextBlock, wait: false, andInMainThread: mainThreadBlock)
+    }
+    
+    /**
+     Shorthand method to create a NSManagedObjectContext object, to perform block and to wait it ends, to save the context and to perform a block in the main thread.
+     
+     - parameter contextBlock: the block to perform with the NSManagedObjectContext object.
+     - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
+     */
+    public func performBlockAndWaitInContextForBatchTask(contextBlock: ((context: NSManagedObjectContext, saveBlock: (() -> ErrorType?)) -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
+        performBlockForBatchTask(contextBlock, wait: true, andInMainThread: mainThreadBlock)
     }
     
     
@@ -241,14 +226,14 @@ final public class CoreDataStack {
      Shorthand method to create a NSManagedObjectContext object, perform block, save the context and perform a block in the main thread.
      
      - parameter contextBlock: the block to perform with the NSManagedObjectContext object.
-     - parameter contextBlockForLongRunningTask: the block to perform with the NSManagedObjectContext object, the save block is passed in argument.
+     - parameter contextBlockForBackgroundTask: the block to perform with the NSManagedObjectContext object, the save block is passed in argument.
      - parameter context: the NSManagedObjectContext object.
      - parameter wait: flag to set the contextBlock blocking or not the thread.
      - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
      */
-    private func performBlock(contextBlock: (NSManagedObjectContext -> Void)?, orContextBlockForLongRunningTask contextBlockForLongRunningTask: ((context: NSManagedObjectContext, saveBlock: ((Bool) -> ErrorType?)) -> Void)?, inContext context:NSManagedObjectContext, wait: Bool, andInMainThread mainThreadBlock:(() -> Void)?) {
+    private func performBlock(contextBlock: (NSManagedObjectContext -> Void)?, orContextBlockForBackgroundTask contextBlockForBackgroundTask: ((context: NSManagedObjectContext, saveBlock: ((Bool) -> ErrorType?)) -> Void)?, inContext context:NSManagedObjectContext, wait: Bool, andInMainThread mainThreadBlock:(() -> Void)?) {
         // Define the block which saves the context.
-        let saveBlock : ((Bool) -> ErrorType?) = { mergeChangesInDefaultManagedObjectContext in
+        let saveBlock : ((Bool) -> ErrorType?) = { [unowned self] mergeChangesInDefaultManagedObjectContext in
             var error: ErrorType?
             
             do {
@@ -273,11 +258,54 @@ final public class CoreDataStack {
             if let contextBlock = contextBlock {
                 contextBlock(context)
             }
-            else if let contextBlockForLongRunningTask = contextBlockForLongRunningTask {
-                contextBlockForLongRunningTask(context: context, saveBlock: saveBlock)
+            else if let contextBlock = contextBlockForBackgroundTask {
+                contextBlock(context: context, saveBlock: saveBlock)
             }
             
             saveBlock(false)
+            
+            if let mainThreadBlock = mainThreadBlock {
+                dispatch_async(dispatch_get_main_queue(), mainThreadBlock)
+            }
+        }
+        
+        if wait {
+            context.performBlockAndWait(blockToPerform)
+        }
+        else {
+            context.performBlock(blockToPerform)
+        }
+    }
+    
+    /**
+     Shorthand method to create a NSManagedObjectContext object, to perform block, to save the context and to perform a block in the main thread.
+     
+     - parameter contextBlock: the block to perform with the NSManagedObjectContext object.
+     - parameter wait: flag to set the contextBlock blocking or not the thread.
+     - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
+     */
+    private func performBlockForBatchTask(contextBlock: ((context: NSManagedObjectContext, saveBlock: (() -> ErrorType?)) -> Void), wait: Bool, andInMainThread mainThreadBlock:(() -> Void)? = nil) {
+        // Get a new context.
+        let context = getNewManagedObjectContextForBatchTask()
+        
+        // Define the block which saves the context.
+        let saveBlock : (() -> ErrorType?) = { [unowned self] in
+            var error: ErrorType?
+            
+            do {
+                try self.saveContext(context)
+            }
+            catch let e {
+                error = e
+            }
+            
+            return error
+        }
+        
+        // Perform the block with the context.
+        let blockToPerform = {
+            contextBlock(context: context, saveBlock: saveBlock)
+            saveBlock()
             
             if let mainThreadBlock = mainThreadBlock {
                 dispatch_async(dispatch_get_main_queue(), mainThreadBlock)
@@ -299,9 +327,9 @@ final public class CoreDataStack {
      */
     @objc private func mergeChanges(notification: NSNotification) {
         if let sender = notification.object as? NSManagedObjectContext where sender != defaultManagedObjectContext && sender != writerManagedObjectContext && sender.parentContext == writerManagedObjectContext {
-            defaultManagedObjectContext.performBlock({
+            defaultManagedObjectContext.performBlock { [unowned self] in
                 self.defaultManagedObjectContext.mergeChangesFromContextDidSaveNotification(notification)
-            })
+            }
         }
     }
     
