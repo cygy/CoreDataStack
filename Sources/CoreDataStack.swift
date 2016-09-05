@@ -87,34 +87,12 @@ final public class CoreDataStack {
      - returns: the new NSManagedObjectContext used to update/create some NSManagedObject objects.
      */
     public func getNewManagedObjectContextForBatchTask() -> NSManagedObjectContext {
-        let context = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.PrivateQueueConcurrencyType)
+        let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
         context.persistentStoreCoordinator = batchPersistentStoreCoodinator
         context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         context.undoManager = nil
         
         return context
-    }
-    
-    /**
-     Save a context and save its parent context if needed.
-     Please call this method in order to save the NSManagedObjectContext objects created by this manager.
-     
-     - parameter context: the context to save.
-     - throws: save operations can throw errors.
-     */
-    public func saveContext(context: NSManagedObjectContext) throws {
-        try context.save()
-        
-        if context.parentContext == defaultManagedObjectContext {
-            defaultManagedObjectContext.performBlock { [unowned self] in
-                do {
-                    try self.defaultManagedObjectContext.save()
-                }
-                catch let e {
-                    fatalError("Can not save the context: \(e)")
-                }
-            }
-        }
     }
     
     /**
@@ -124,19 +102,10 @@ final public class CoreDataStack {
      - throws: save operations can throw errors.
      */
     public func saveContexts() throws {
-        let saveContext = { (context: NSManagedObjectContext) in
-            context.performBlock {
-                do {
-                    try context.save()
-                }
-                catch let e {
-                    fatalError("Can not save the context: \(e)")
-                }
-            }
+        let context = defaultManagedObjectContext
+        context.performBlock {
+            context.saveToParent()
         }
-        
-        saveContext(defaultManagedObjectContext)
-        saveContext(writerManagedObjectContext)
     }
     
     /**
@@ -234,17 +203,11 @@ final public class CoreDataStack {
     private func performBlock(contextBlock: (NSManagedObjectContext -> Void)?, orContextBlockForBackgroundTask contextBlockForBackgroundTask: ((context: NSManagedObjectContext, saveBlock: ((Bool) -> ErrorType?)) -> Void)?, inContext context:NSManagedObjectContext, wait: Bool, andInMainThread mainThreadBlock:(() -> Void)?) {
         // Define the block which saves the context.
         let saveBlock : ((Bool) -> ErrorType?) = { [unowned self] mergeChangesInDefaultManagedObjectContext in
-            var error: ErrorType?
+            if mergeChangesInDefaultManagedObjectContext {
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.mergeChanges), name: NSManagedObjectContextDidSaveNotification, object: context)
+            }
             
-            do {
-                if mergeChangesInDefaultManagedObjectContext {
-                    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.mergeChanges), name: NSManagedObjectContextDidSaveNotification, object: context)
-                }
-                try self.saveContext(context)
-            }
-            catch let e {
-                error = e
-            }
+            let error = context.saveToParent()
             
             if mergeChangesInDefaultManagedObjectContext {
                 NSNotificationCenter.defaultCenter().removeObserver(self, name: NSManagedObjectContextDidSaveNotification, object: context)
@@ -288,18 +251,9 @@ final public class CoreDataStack {
         // Get a new context.
         let context = getNewManagedObjectContextForBatchTask()
         
-        // Define the block which saves the context.
-        let saveBlock : (() -> ErrorType?) = { [unowned self] in
-            var error: ErrorType?
-            
-            do {
-                try self.saveContext(context)
-            }
-            catch let e {
-                error = e
-            }
-            
-            return error
+        // Define the block which saves the context and its parents.
+        let saveBlock : (() -> ErrorType?) = {
+            return context.saveToParent()
         }
         
         // Perform the block with the context.
@@ -395,13 +349,15 @@ final public class CoreDataStack {
         }
         
         // Create the writer managed object context.
-        writerManagedObjectContext = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.PrivateQueueConcurrencyType)
-        writerManagedObjectContext.undoManager = nil
+        writerManagedObjectContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
         writerManagedObjectContext.persistentStoreCoordinator = defaultPersistentStoreCoodinator
+        writerManagedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        writerManagedObjectContext.undoManager = nil
         
         // Create the default managed object contexte.
-        defaultManagedObjectContext = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.MainQueueConcurrencyType)
-        defaultManagedObjectContext.undoManager = nil
+        defaultManagedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
         defaultManagedObjectContext.parentContext = writerManagedObjectContext
+        defaultManagedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        defaultManagedObjectContext.undoManager = nil
     }
 }

@@ -15,6 +15,7 @@
 		F15EE1351CB9ADD900665B4D /* CoreDataStack.h in Headers */ = {isa = PBXBuildFile; fileRef = F15EE0E61CB9AAEC00665B4D /* CoreDataStack.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F15EE1471CB9AEC200665B4D /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15EE0E71CB9AAEC00665B4D /* CoreDataStack.swift */; };
 		F15EE1481CB9AEC800665B4D /* CoreDataStack.h in Headers */ = {isa = PBXBuildFile; fileRef = F15EE0E61CB9AAEC00665B4D /* CoreDataStack.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F1A662811D7DFCC5008B31A3 /* NSManagedObjectContext+Save.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A662801D7DFCC5008B31A3 /* NSManagedObjectContext+Save.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		F15EE1031CB9AC9F00665B4D /* CoreDataStack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CoreDataStack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F15EE12C1CB9AD8400665B4D /* CoreDataStack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CoreDataStack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F15EE13B1CB9AE6000665B4D /* CoreDataStack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CoreDataStack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F1A662801D7DFCC5008B31A3 /* NSManagedObjectContext+Save.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+Save.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				F15EE0E71CB9AAEC00665B4D /* CoreDataStack.swift */,
+				F1A662801D7DFCC5008B31A3 /* NSManagedObjectContext+Save.swift */,
 				F15EE0ED1CB9AB3200665B4D /* Supporting Files */,
 			);
 			path = Sources;
@@ -306,6 +309,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F1A662811D7DFCC5008B31A3 /* NSManagedObjectContext+Save.swift in Sources */,
 				F15EE0FC1CB9ABE500665B4D /* CoreDataStack.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
