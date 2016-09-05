@@ -101,7 +101,7 @@ final public class CoreDataStack {
      
      - throws: save operations can throw errors.
      */
-    public func saveContexts() throws {
+    public func saveContexts() {
         let context = defaultManagedObjectContext
         context.performBlock {
             context.saveToParent()
