@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F13136781D8940510010D29F /* NSManagedObjectContext+Save.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A662801D7DFCC5008B31A3 /* NSManagedObjectContext+Save.swift */; };
+		F13136791D8940560010D29F /* NSManagedObjectContext+Save.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A662801D7DFCC5008B31A3 /* NSManagedObjectContext+Save.swift */; };
+		F131367A1D89405B0010D29F /* NSManagedObjectContext+Save.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A662801D7DFCC5008B31A3 /* NSManagedObjectContext+Save.swift */; };
 		F15EE0FC1CB9ABE500665B4D /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15EE0E71CB9AAEC00665B4D /* CoreDataStack.swift */; };
 		F15EE0FD1CB9ABEF00665B4D /* CoreDataStack.h in Headers */ = {isa = PBXBuildFile; fileRef = F15EE0E61CB9AAEC00665B4D /* CoreDataStack.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F15EE10B1CB9ACBE00665B4D /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15EE0E71CB9AAEC00665B4D /* CoreDataStack.swift */; };
@@ -318,6 +321,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F13136781D8940510010D29F /* NSManagedObjectContext+Save.swift in Sources */,
 				F15EE10B1CB9ACBE00665B4D /* CoreDataStack.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -326,6 +330,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F13136791D8940560010D29F /* NSManagedObjectContext+Save.swift in Sources */,
 				F15EE1341CB9ADD400665B4D /* CoreDataStack.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -334,6 +339,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F131367A1D89405B0010D29F /* NSManagedObjectContext+Save.swift in Sources */,
 				F15EE1471CB9AEC200665B4D /* CoreDataStack.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
