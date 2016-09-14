@@ -135,11 +135,9 @@ context.performBlock {
     ...
 
     // Save the context.
-    do {
-        try coreDataStack.saveContext(context)
-    }
-    catch let e {
+    if let error = context.saveToParent() {
         // Handle error here.
+        ...
     }
 }
 ```
@@ -153,7 +151,7 @@ coreDataStack.performBlockInContext({ context in
     // Do your operations here.
     ...
 
-    // The context is saved at the end of this block, no need to call the `saveContext` method.
+    // The context is saved at the end of this block, no need to call the `saveToParent` method.
 }) {
     // This block is run after the first block is done and the context is saved.
     // This block is run in the main thread and can be used to update the UI.
@@ -178,11 +176,9 @@ context.performBlock {
     ...
 
     // Save the context.
-    do {
-        try coreDataStack.saveContext(context)
-    }
-    catch let e {
+    if let error = context.saveToParent() {
         // Handle error here.
+        ...
     }
 
     // Now update the 'defaultManagedObjectContext' object.
@@ -238,11 +234,9 @@ context.performBlock {
     ...
 
     // Save the context.
-    do {
-        try coreDataStack.saveContext(context)
-    }
-    catch let e {
+    if let error = context.saveToParent() {
         // Handle error here.
+        ...
     }
 
     // Now update the 'defaultManagedObjectContext' object.
@@ -289,10 +283,6 @@ You can save the contexts before the application terminates.
 import CoreDataStack
 
 func applicationWillTerminate(application: UIApplication) {
-    do {
-        try coreDataStack.saveContexts()
-    } catch let e {
-        debugPrint("Can not save the contexts: \(e)")
-    }
+    coreDataStack.saveContexts()
 }
 ```
