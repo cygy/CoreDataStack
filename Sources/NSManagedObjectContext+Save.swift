@@ -35,14 +35,14 @@ import CoreData
  */
 extension NSManagedObjectContext {
     
-    public func saveToParent() -> ErrorType? {
+    public func saveToParent() -> Error? {
         if hasChanges {
             do {
                 try save()
                 
-                if let parentContext = parentContext {
-                    parentContext.performBlock {
-                        parentContext.saveToParent()
+                if let parent = parent {
+                    parent.perform {
+                        parent.saveToParent()
                     }
                 }
             }

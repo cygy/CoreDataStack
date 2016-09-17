@@ -29,23 +29,23 @@
 
 import UIKit
 import CoreData
+import Foundation
 
 class ViewController: UITableViewController, NSFetchedResultsControllerDelegate {
     
-    let coreDataStack = (UIApplication.sharedApplication().delegate as! AppDelegate).coreDataStack
+    private let coreDataStack = (UIApplication.shared.delegate as! AppDelegate).coreDataStack
     
     /*
      In this example, the NSFetchedResultsController is using the defaultManagedObjectContext object
      of the main CoreDataStask object which is bound to the main thread.
      The defaultManagedObjectContext is mainly used to 'pull' and 'read' the objects.
      */
-    lazy private var fetchedResultsController: NSFetchedResultsController = {
-        let fetchRequest = NSFetchRequest(entityName: "Person")
+    lazy private var fetchedResultsController: NSFetchedResultsController<Person> = {
+        let fetchRequest = NSFetchRequest<Person>(entityName: "Person")
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lastName", ascending: true), NSSortDescriptor(key: "firstName", ascending: true)]
         
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.coreDataStack.defaultManagedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
+        let fetchedResultsController = NSFetchedResultsController<Person>(fetchRequest: fetchRequest, managedObjectContext: self.coreDataStack.defaultContext, sectionNameKeyPath: nil, cacheName: nil)
         fetchedResultsController.delegate = self
-        
         return fetchedResultsController
     }()
     
@@ -53,16 +53,16 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
      The persons are generated from scratch to a ManagedObjectContext object bound to a background thread
      and they are loaded from the defaultManagedObjectContext object which is bound to the main thread.
      */
-    @IBAction func refreshPersons(sender: UIRefreshControl) {
-        coreDataStack.performBlockInContextForBatchTask({ (context, saveBlock) in
+    @IBAction func refreshPersons(_ sender: UIRefreshControl) {
+        coreDataStack.performBatchTask(inContext: { (context, saveBlock) in
             for i in 0...10000 {
-                let person = NSEntityDescription.insertNewObjectForEntityForName("Person", inManagedObjectContext: context) as! Person
+                let person = NSEntityDescription.insertNewObject(forEntityName: "Person", into: context) as! Person
                 person.firstName = "John\(i)"
                 person.lastName = "Doe\(i)"
                 
                 if i%1000 == 0 {
                     if let error = saveBlock() {
-                        print("Can not save the context: \(error)")
+                        debugPrint("Can not save the context: \(error)")
                     }
                 }
             }
@@ -77,9 +77,9 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
      A single persons is generated to a ManagedObjectContext object bound to a background thread
      which its parent context is the defaultManagedObjectContext object which is bound to the main thread.
      */
-    @IBAction func addPerson(sender: UIBarButtonItem) {
-        coreDataStack.performBlockInContext({ context in
-            let person = NSEntityDescription.insertNewObjectForEntityForName("Person", inManagedObjectContext: context) as! Person
+    @IBAction func addPerson(_ sender: UIBarButtonItem) {
+        coreDataStack.perform(inContext: { context in
+            let person = NSEntityDescription.insertNewObject(forEntityName: "Person", into: context) as! Person
             person.firstName = "John00"
             person.lastName = "Doe00"
         }) {}
@@ -87,22 +87,28 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
     
     private func fetch() {
         do {
-            try self.fetchedResultsController.performFetch()
+            try fetchedResultsController.performFetch()
         }
         catch let e {
-            print("Can not load the persons: \(e)")
+            debugPrint("Can not load the persons: \(e)")
         }
     }
     
-    private func configureCell(cell: UITableViewCell, indexPath: NSIndexPath) {
-        let person = fetchedResultsController.objectAtIndexPath(indexPath) as! Person
-        cell.textLabel?.text = "\(person.firstName!) \(person.lastName!)"
+    private func configure(cell: UITableViewCell, at indexPath: IndexPath) {
+        let person = fetchedResultsController.object(at: indexPath)
+        
+        if let firstName = person.firstName, let lastName = person.lastName {
+            cell.textLabel?.text = "\(firstName) \(lastName)"
+        }
+        else {
+            cell.textLabel?.text = "Unknown"
+        }
     }
     
     /*
      Table view related methods
      */
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         if let sections = fetchedResultsController.sections {
             return sections.count
         }
@@ -110,7 +116,7 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
         return 0
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if let sections = fetchedResultsController.sections {
             return sections[section].numberOfObjects
         }
@@ -118,27 +124,27 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
         return 0
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("personCell", forIndexPath: indexPath)
-        configureCell(cell, indexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "personCell", for: indexPath)
+        configure(cell: cell, at: indexPath)
         
         return cell
     }
     
-    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
     
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
             // Save the ID of the object to delete.
             // Do not forget that the NSManagedObject objects can not be passed through distinct threads, use the objectID instead.
-            let objectID = self.fetchedResultsController.objectAtIndexPath(indexPath).objectID
+            let objectID = fetchedResultsController.object(at: indexPath).objectID
             
             // Here a single object is deleted, so a managed object context directly bound to the defaultManagedObjectContext is used.
-            coreDataStack.performBlockInContext({ context in
-                let objectToDelete = context.objectWithID(objectID)
-                context.deleteObject(objectToDelete)
+            coreDataStack.perform(inContext: { context in
+                let object = context.object(with: objectID)
+                context.delete(object)
             }) {}
         }
     }
@@ -146,38 +152,38 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
     /*
      NSFetchedResultsController related methods
      */
-    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.beginUpdates()
     }
     
-    func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         switch type {
-        case .Insert:
-            tableView.insertSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
-        case .Delete:
-            tableView.deleteSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
-        case .Move:
+        case .insert:
+            tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
+        case .delete:
+            tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
+        case .move:
             break
-        case .Update:
+        case .update:
             break
         }
     }
     
-    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         switch type {
-        case .Insert:
-            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
-        case .Delete:
-            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
-        case .Update:
-            configureCell(self.tableView.cellForRowAtIndexPath(indexPath!)!, indexPath: indexPath!)
-        case .Move:
-            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
-            tableView.insertRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
+        case .insert:
+            tableView.insertRows(at: [newIndexPath!], with: .fade)
+        case .delete:
+            tableView.deleteRows(at: [indexPath!], with: .fade)
+        case .update:
+            configure(cell: tableView.cellForRow(at: indexPath!)!, at: indexPath!)
+        case .move:
+            tableView.deleteRows(at: [indexPath!], with: .fade)
+            tableView.insertRows(at: [newIndexPath!], with: .fade)
         }
     }
     
-    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.endUpdates()
     }
     
@@ -187,7 +193,7 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        self.fetch()
+        fetch()
     }
 
     override func didReceiveMemoryWarning() {

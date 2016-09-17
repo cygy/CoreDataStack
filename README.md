@@ -1,10 +1,13 @@
 # CoreDataStack
 
-Helper to set up CoreData stack, fetch, create and save `NSManagedObject` objects for your iOS/tvOS/watchOS/OSX projects.
+Helper to set up a CoreData stack, fetch, create and save `NSManagedObject` objects for your iOS/tvOS/watchOS/OSX projects.
 You continue using `NSManagedObject`, `NSFetchedResultsController` classes... Not magic, just a helper :)
 
 `CoreDataStack` instances provide a default `NSManagedObjectContext` object to use with the `NSFetchedResultsController` objects.
 `CoreDataStack` instances provide also convenient methods to execute the recurring pattern: create a `NSManagedObjectContext` object, create  some `NSManagedObject` objects, save them and update the user interface in the main thread.
+
+> **The syntax from the version 2.0 is not compatible with the syntax from version < 2.0.**
+> **Swift 3 is supported since the version 2.0. To use it with Swift 2 use the version 1.6.2.**
 
 Example:
 
@@ -14,8 +17,8 @@ import CoreDataStack
 // The first block is used to perform actions on the context's thread.
 // This block provides a context and save it.
 // The second block is used to update the user interface, it runs on the main thread.
-coreDataStack.performBlockInContext({ context in
-    let person = NSEntityDescription.insertNewObjectForEntityForName("Person", inManagedObjectContext: context) as! Person
+myStack.perform(inContext: { context in
+    let person = NSEntityDescription.insertNewObject(forEntityName: "Person", into: context) as! Person
     person.firstName = "John"
     person.lastName = "Doe"
 }) {
@@ -101,36 +104,36 @@ $ git submodule update --init --recursive
 ```swift
 import CoreDataStack
 
-let coreDataStack = CoreDataStack(modelFileNames: ["CoreDataStack_Example"], persistentFileName: "example.sqlite")
+let myStack = CoreDataStack(modelFileNames: ["CoreDataStack_Example"], persistentFileName: "example.sqlite")
 ```
 
 You pass the names of the .mom files (without the extension) as arguments. CoreDataStack will create the model by merging the .mom files.
 The second argument is the name of the persistent file.
-The other arguments are optioinal (see code source)
+The other arguments are optional (see code source)
 
 > Each file name must be passed as argument. By experience I do not recommend to automatically merge all the .mom files in the bundle.
 
 ### Pull and display objects in UI from CoreData
 
-To pull and display objects from CoreData, use the `defaultManagedObjectContext` property of `CoreDataStack`, i.e. with the `NSFetchedResultsController` objects. As the `defaultManagedObjectContext` is using the main thread it is fit to be used with the UI objects like the `UITableView` objects.
+To pull and display objects from CoreData, use the `defaultContext` property of `CoreDataStack`, i.e. with the `NSFetchedResultsController` objects. As the `defaultContext` is using the main thread it is fit to be used with the UI objects like the `UITableView` objects.
 
 ```swift
 import CoreDataStack
 
-let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: coreDataStack.defaultManagedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
+let fetchedResultsController = NSFetchedResultsController<MyObject>(fetchRequest: fetchRequest, managedObjectContext: myStack.defaultContext, sectionNameKeyPath: nil, cacheName: nil)
 ```
 
 ### Execute a few operations on NSManagedObject objects
 
 If you want to do a few operations on `NSManagedObject` objects (like create one object, or delete one object) use a simple `NSManagedObjectContext` for this task.
-Execute your tasks and save the context. The changes will be updated to the `defaultManagedObjectContext` object too.
+Execute your tasks and save the context. The changes will be updated to the `defaultContext` object too.
 
 ```swift
 import CoreDataStack
 
-let context = coreDataStack.getNewManagedObjectContext()
+let context = myStack.newContext()
 
-context.performBlock {
+context.perform {
     // Do your operations here.
     ...
 
@@ -147,7 +150,7 @@ This shorthand is equivalent:
 ```swift
 import CoreDataStack
 
-coreDataStack.performBlockInContext({ context in
+myStack.perform(inContext: { context in
     // Do your operations here.
     ...
 
@@ -159,19 +162,19 @@ coreDataStack.performBlockInContext({ context in
 }
 ```
 
-> Behind the scene, a `NSManagedObjectContext` object that its parent context is the `defaultManagedObjectContext` object is created.
+> Behind the scene, a `NSManagedObjectContext` object that its parent context is the `defaultContext` object is created.
 
 ### Execute operations on NSManagedObject objects on background
 
 If you want to do operations on `NSManagedObject` objects on a background thread, use a dedicated `NSManagedObjectContext` for this task.
-Once the operations are done, you have to refresh to `defaultManagedObjectContext` to update the UI (i.e. refetch from `NSFetchedResultsController` objects).
+Once the operations are done, you have to refresh to `defaultContext` to update the UI (i.e. refetch from `NSFetchedResultsController` objects).
 
 ```swift
 import CoreDataStack
 
-let context = coreDataStack.getNewManagedObjectContextForBackgroundTask()
+let context = myStack.newContextForBackgroundTask()
 
-context.performBlock {
+context.perform {
     // Do your operations here.
     ...
 
@@ -181,8 +184,8 @@ context.performBlock {
         ...
     }
 
-    // Now update the 'defaultManagedObjectContext' object.
-    NSOperationQueue.mainQueue().addOperationWithBlock() {
+    // Now update the 'defaultContext' object.
+    OperationQueue.main.addOperation {
         do {
             try fetchedResultsController.performFetch()
         }
@@ -198,7 +201,7 @@ This shorthand is equivalent:
 ```swift
 import CoreDataStack
 
-coreDataStack.performBlockInContextForBackgroundTask({ (context, saveBlock) in
+myStack.performBackgroundTask(inContext: { (context, saveBlock) in
     // Do your operations here.
     ...
 
@@ -215,21 +218,21 @@ coreDataStack.performBlockInContextForBackgroundTask({ (context, saveBlock) in
 }
 ```
 
-> Behind the scene, a `NSManagedObjectContext` object that its parent context is the `writerManagedObjectContext` object and not the `defaultManagedObjectContext` object is created.
+> Behind the scene, a `NSManagedObjectContext` object that its parent context is the `writerContext` object and not the `defaultContext` object is created.
 
 ### Execute a batch of operations on NSManagedObject objects
 
 If you want to do a batch of operations on `NSManagedObject` objects (like large import and create, or delete), use a dedicated `NSManagedObjectContext` for this task.
-Once the operations are done, you have to refresh to `defaultManagedObjectContext` to update the UI (i.e. refetch from `NSFetchedResultsController` objects).
+Once the operations are done, you have to refresh to `defaultContext` to update the UI (i.e. refetch from `NSFetchedResultsController` objects).
 
 This is also useful to import a large amount of data that are not related to the UI.
 
 ```swift
 import CoreDataStack
 
-let context = coreDataStack.getNewManagedObjectContextForBatchTask()
+let context = myStack.newContextForBatchTask()
 
-context.performBlock {
+context.perform {
     // Do your operations here.
     ...
 
@@ -239,8 +242,8 @@ context.performBlock {
         ...
     }
 
-    // Now update the 'defaultManagedObjectContext' object.
-    NSOperationQueue.mainQueue().addOperationWithBlock() {
+    // Now update the 'defaultContext' object.
+    OperationQueue.main.addOperation {
         do {
             try fetchedResultsController.performFetch()
         }
@@ -256,7 +259,7 @@ This shorthand is equivalent:
 ```swift
 import CoreDataStack
 
-coreDataStack.performBlockInContextForBatchTask({ (context, saveBlock) in
+myStack.performBatchTask (inContext: { (context, saveBlock) in
     // Do your operations here.
     ...
 
@@ -273,7 +276,7 @@ coreDataStack.performBlockInContextForBatchTask({ (context, saveBlock) in
 }
 ```
 
-> Behind the scene, a `NSManagedObjectContext` object that its parent persistent store is different than the `defaultManagedObjectContext` object is created.
+> Behind the scene, a `NSManagedObjectContext` object that its parent persistent store is different than the `defaultContext` object is created.
 
 ### Save the contexts
 
@@ -283,6 +286,6 @@ You can save the contexts before the application terminates.
 import CoreDataStack
 
 func applicationWillTerminate(application: UIApplication) {
-    coreDataStack.saveContexts()
+    myStack.saveContexts()
 }
 ```
