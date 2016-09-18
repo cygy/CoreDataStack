@@ -41,7 +41,7 @@ extension NSManagedObjectContext {
                 try save()
                 
                 if let parent = parent {
-                    parent.perform {
+                    parent.performAndWait {
                         parent.saveToParent()
                     }
                 }

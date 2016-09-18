@@ -299,13 +299,14 @@ final public class CoreDataStack {
      - parameter persistentStoreType: type of the persistent store (default = NSSQLiteStoreType)
      - parameter persistentStoreConfigration: configuration of the persistent store (default = nil)
      - parameter persistentStoreOptions: options of the persistent store (default = [NSMigratePersistentStoresAutomaticallyOption: true, NSInferMappingModelAutomaticallyOption: true])
+     - parameter bundle: bundle where the .momd files are, useful for the unit tests, you will never use it.
      - returns: the new NSManagedObjectContext used to update/create some NSManagedObject objects.
      */
-    public init(modelFileNames: [String], persistentFileName: String, persistentStoreType: String = NSSQLiteStoreType, persistentStoreConfigration: String? = nil, persistentStoreOptions: [String:AnyObject]? = [NSMigratePersistentStoresAutomaticallyOption: true as AnyObject, NSInferMappingModelAutomaticallyOption: true as AnyObject]) {
+    public init(modelFileNames: [String], persistentFileName: String, persistentStoreType: String = NSSQLiteStoreType, persistentStoreConfigration: String? = nil, persistentStoreOptions: [String:AnyObject]? = [NSMigratePersistentStoresAutomaticallyOption: true as AnyObject, NSInferMappingModelAutomaticallyOption: true as AnyObject], bundle: Bundle = Bundle.main) {
         // Create the managed object model.
         var models = [NSManagedObjectModel]()
         for modelFileName in modelFileNames {
-            guard let path = Bundle.main.path(forResource: modelFileName, ofType: "momd") else {
+            guard let path = bundle.path(forResource: modelFileName, ofType: "momd") else {
                 fatalError("Can not create managed object model with name: \(modelFileName)")
             }
             
