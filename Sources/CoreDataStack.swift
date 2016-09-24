@@ -99,19 +99,19 @@ final public class CoreDataStack {
      Call this method to save the changes to persistent store.
      This must be called in the 'applicationWillTerminate' and/or 'applicationWillResignActive' methods.
      
-     - throws: save operations can throw errors.
+     - parameter completion: block called when all the contexts are saved.
      */
-    public func saveContexts() {
+    public func saveContexts(withCompletion completion: ((Error?) -> Void)? = nil) {
         let context = defaultContext
         context.perform {
-            context.saveToParent()
+            context.saveToParents(withCompletion: completion)
         }
     }
     
     /**
      Shorthand method to create a NSManagedObjectContext object, to perform block, to save the context and to perform a block in the main thread.
      
-     - parameter contextBlock: the block to perform with the NSManagedObjectContext object, the save block is passed in argument.
+     - parameter contextBlock: the block to perform with the NSManagedObjectContext object.
      - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
      */
     public func perform(inContext contextBlock: @escaping ((NSManagedObjectContext) -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
@@ -122,7 +122,7 @@ final public class CoreDataStack {
     /**
      Shorthand method to create a NSManagedObjectContext object, to perform block and to wait it ends, to save the context and to perform a block in the main thread.
      
-     - parameter contextBlock: the block to perform with the NSManagedObjectContext object, the save block is passed in argument.
+     - parameter contextBlock: the block to perform with the NSManagedObjectContext object.
      - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
      */
     public func performAndWait(inContext contextBlock: @escaping ((NSManagedObjectContext) -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
@@ -133,7 +133,7 @@ final public class CoreDataStack {
     /**
      Shorthand method to create a NSManagedObjectContext object, to perform block, to save the context and to perform a block in the main thread.
      
-     - parameter contextBlock: the block to perform with the NSManagedObjectContext object.
+     - parameter contextBlock: the block to perform with the NSManagedObjectContext object, a save block is passed in argument.
      - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
      */
     public func performBackgroundTask(inContext contextBlock: @escaping ((NSManagedObjectContext, ((Bool) -> Error?)) -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
@@ -144,7 +144,7 @@ final public class CoreDataStack {
     /**
      Shorthand method to create a NSManagedObjectContext object, to perform block and to wait it ends, to save the context and to perform a block in the main thread.
      
-     - parameter contextBlock: the block to perform with the NSManagedObjectContext object.
+     - parameter contextBlock: the block to perform with the NSManagedObjectContext object, a save block is passed in argument.
      - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
      */
     public func performAndWaitBackgroundTask(inContext contextBlock: @escaping ((NSManagedObjectContext, ((Bool) -> Error?)) -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
@@ -155,7 +155,7 @@ final public class CoreDataStack {
     /**
      Shorthand method to create a NSManagedObjectContext object, to perform block, to save the context and to perform a block in the main thread.
      
-     - parameter contextBlock: the block to perform with the NSManagedObjectContext object.
+     - parameter contextBlock: the block to perform with the NSManagedObjectContext object, a save block is passed in argument.
      - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
      */
     public func performBatchTask(inContext contextBlock: @escaping ((NSManagedObjectContext, (() -> Error?)) -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
@@ -165,7 +165,7 @@ final public class CoreDataStack {
     /**
      Shorthand method to create a NSManagedObjectContext object, to perform block and to wait it ends, to save the context and to perform a block in the main thread.
      
-     - parameter contextBlock: the block to perform with the NSManagedObjectContext object.
+     - parameter contextBlock: the block to perform with the NSManagedObjectContext object, a save block is passed in argument.
      - parameter mainThreadBlock: the block to save the NSManagedObjectContext object.
      */
     public func performAndWaitBatchTask(inContext contextBlock: @escaping ((NSManagedObjectContext, (() -> Error?)) -> Void), andInMainThread mainThreadBlock:(() -> Void)? = nil) {
@@ -207,7 +207,7 @@ final public class CoreDataStack {
                 NotificationCenter.default.addObserver(self, selector: #selector(self.mergeChanges), name: NSNotification.Name.NSManagedObjectContextDidSave, object: context)
             }
             
-            let error = context.saveToParent()
+            let error = context.saveToParentsAndWait()
             
             if mergeChangesInDefaultManagedObjectContext {
                 NotificationCenter.default.removeObserver(self, name: NSNotification.Name.NSManagedObjectContextDidSave, object: context)
@@ -225,7 +225,7 @@ final public class CoreDataStack {
                 contextBlock(context, saveBlock)
             }
             
-            saveBlock(false)
+            let _ = saveBlock(false)
             
             if let mainThreadBlock = mainThreadBlock {
                 DispatchQueue.main.async(execute: mainThreadBlock)
@@ -253,13 +253,13 @@ final public class CoreDataStack {
         
         // Define the block which saves the context and its parents.
         let saveBlock : (() -> Error?) = {
-            return context.saveToParent()
+            return context.saveToParentsAndWait()
         }
         
         // Perform the block with the context.
         let blockToPerform = {
             contextBlock(context, saveBlock)
-            saveBlock()
+            let _ = saveBlock()
             
             if let mainThreadBlock = mainThreadBlock {
                 DispatchQueue.main.async(execute: mainThreadBlock)
