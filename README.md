@@ -6,6 +6,8 @@ You continue using `NSManagedObject`, `NSFetchedResultsController` classes... No
 `CoreDataStack` instances provide a default `NSManagedObjectContext` object to use with the `NSFetchedResultsController` objects.
 `CoreDataStack` instances provide also convenient methods to execute the recurring pattern: create a `NSManagedObjectContext` object, create  some `NSManagedObject` objects, save them and update the user interface in the main thread.
 
+> **This branch is only for Swift 2. If you want use Swift 3, switch to the branch `master`.**
+
 Example:
 
 ```swift
