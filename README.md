@@ -7,7 +7,7 @@ You continue using `NSManagedObject`, `NSFetchedResultsController` classes... No
 `CoreDataStack` instances provide also convenient methods to execute the recurring pattern: create a `NSManagedObjectContext` object, create  some `NSManagedObject` objects, save them and update the user interface in the main thread.
 
 > **The syntax from the version 2.0 is not compatible with the syntax from version < 2.0.**
-> **Swift 3 is supported since the version 2.0. To use it with Swift 2 use the version 1.6.2.**
+> **Swift 3 is supported since the version 2.0. To use Swift 2, please switch to the branch `swift2`.**
 
 Example:
 
